@@ -1,28 +1,40 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import { categories } from '../../data/categories';
 
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+// Only show categories that have at least one project.
+const groups = categories
+  .map((c) => ({ ...c, items: all.filter((p) => p.data.category === c.id) }))
+  .filter((g) => g.items.length > 0);
 ---
 
-<Base title="Projects" description="Selected urban analytics, digital twin and climate-resilience projects.">
-  <section class="container head">
-    <p class="eyebrow">Selected work</p>
+<Base title="Projects" description="Urban analytics, urban design and architecture projects.">
+  <section class="container narrow head">
     <h1>Projects</h1>
-    <p class="lede">Parcel-level datasets, digital twins, climate resilience and innovation diagnostics, from Catalonia to the Western Cape and Boston.</p>
   </section>
-  <section class="container grid">
-    {projects.map((p, i) => <ProjectCard slug={p.id} index={i} {...p.data} />)}
-  </section>
+  {groups.map((g) => (
+    <section class="container narrow group">
+      <p class="label">{g.label}</p>
+      <ul class="rows">
+        {g.items.map((p) => (
+          <li>
+            <a class="row" href={`${base}/projects/${p.id}/`}>
+              <span class="t">{p.data.title}</span>
+              <span class="m">{[p.data.location, p.data.year].filter(Boolean).join(', ')}</span>
+              <span class="s">{p.data.context}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </Base>
 
 <style>
-  .head { padding-top: 80px; padding-bottom: 48px; max-width: var(--narrow); margin-left: max(0px, calc((100% - var(--max)) / 2)); }
-  .head .lede { margin-top: 20px; }
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding-bottom: 40px; }
-  @media (max-width: 760px) {
-    .head { padding-top: 48px; }
-    .grid { grid-template-columns: 1fr; }
-  }
+  .head { padding-top: 72px; padding-bottom: 24px; }
+  .group { padding-top: 32px; padding-bottom: 16px; }
+  @media (max-width: 640px) { .head { padding-top: 40px; } }
 </style>

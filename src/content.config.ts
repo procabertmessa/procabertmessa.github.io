@@ -7,13 +7,16 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
-    context: z.string(), // e.g. "Aretian · South Africa"
+    category: z.enum(['urban-analytics', 'urban-design', 'architecture']),
+    context: z.string(), // who it was for or with, e.g. "Aretian" or "Turull Sorensen Arquitectura"
+    location: z.string().optional(),
     year: z.string().optional(),
     stack: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     order: z.number().default(100), // lower shows first
     featured: z.boolean().default(false),
-    cover: z.string().optional(), // path under /public, e.g. /images/projects/flood.jpg
+    cover: z.string().optional(), // path under /public, e.g. /images/projects/flood/cover.jpg
+    images: z.array(z.object({ src: z.string(), caption: z.string().optional() })).default([]),
   }),
 });
 

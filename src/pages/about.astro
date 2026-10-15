@@ -5,120 +5,77 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Base title="About" description={person.profile[0]}>
-  <section class="container intro">
-    <div>
-      <p class="eyebrow">About</p>
-      <h1>Architect by training, data scientist by practice.</h1>
-    </div>
+  <section class="container narrow head">
+    <h1>About</h1>
     <div class="prose">
       {person.profile.map((p, i) => <p class={i === 0 ? 'lede' : ''}>{p}</p>)}
-      <p class="status">{person.status}</p>
-      <div class="actions">
-        <a class="btn btn-primary" href={`${base}${person.cv.en}`}>CV in English (PDF)</a>
-        <a class="btn btn-ghost" href={`${base}${person.cv.es}`}>CV en español (PDF)</a>
-      </div>
+      <p class="muted small">{person.status}</p>
+      <p class="small">Download CV: <a href={`${base}${person.cv.en}`}>English</a> · <a href={`${base}${person.cv.es}`}>Español</a></p>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow">Toolkit</p>
-      <h2>Core skills</h2>
-      <div class="skills">
-        {skills.map((s) => (
-          <div class="skill">
-            <h3>{s.group}</h3>
-            <ul class="tags">{s.items.map((i) => <li>{i}</li>)}</ul>
+  <section class="container narrow section">
+    <p class="label">Experience</p>
+    {experience.map((j) => (
+      <article class="job">
+        <h2>{j.org} <span class="muted">· {j.location}</span></h2>
+        {j.roles.map((r) => (
+          <p class="role"><span>{r.title}</span><span class="muted">{r.dates}</span></p>
+        ))}
+        <ul>{j.bullets.map((b) => <li>{b}</li>)}</ul>
+      </article>
+    ))}
+  </section>
+
+  <section class="container narrow section">
+    <p class="label">Skills</p>
+    <dl class="skills">
+      {skills.map((s) => (
+        <>
+          <dt>{s.group}</dt>
+          <dd>{s.items.join(', ')}</dd>
+        </>
+      ))}
+    </dl>
+  </section>
+
+  <section class="container narrow section">
+    <p class="label">Education</p>
+    <ul class="rows">
+      {education.map((e) => (
+        <li>
+          <div class="row">
+            <span class="t">{e.title}</span>
+            <span class="m">{e.dates}</span>
+            <span class="s">{e.school}</span>
           </div>
-        ))}
-      </div>
-    </div>
+        </li>
+      ))}
+    </ul>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow">Career</p>
-      <h2>Experience</h2>
-      <div class="jobs">
-        {experience.map((j) => (
-          <article class="job">
-            <div class="job-side">
-              <h3>{j.org}</h3>
-              <p class="loc">{j.location}</p>
-            </div>
-            <div>
-              {j.about && <p class="about">{j.about}</p>}
-              {j.roles.map((r) => (
-                <p class="role"><strong>{r.title}</strong><span>{r.dates}</span></p>
-              ))}
-              <ul class="bullets">{j.bullets.map((b) => <li>{b}</li>)}</ul>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container two">
-      <div>
-        <p class="eyebrow">Study</p>
-        <h2>Education</h2>
-        <ul class="edu">
-          {education.map((e) => (
-            <li>
-              <span class="dates">{e.dates}</span>
-              <strong>{e.title}</strong>
-              <span>{e.school}</span>
-              {e.note && <span class="note">{e.note}</span>}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <p class="eyebrow">Voice</p>
-        <h2>Languages</h2>
-        <ul class="langs">
-          {languages.map((l) => (
-            <li><strong>{l.name}</strong><span>{l.level}</span></li>
-          ))}
-        </ul>
-      </div>
-    </div>
+  <section class="container narrow section">
+    <p class="label">Languages</p>
+    <p>{languages.map((l) => `${l.name} (${l.level.toLowerCase()})`).join(', ')}</p>
   </section>
 </Base>
 
 <style>
-  .intro { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; padding-top: 80px; padding-bottom: 72px; }
-  .intro h1 { font-size: clamp(2.2rem, 4.5vw, 3.2rem); }
-  .status { font-size: 0.9rem; color: var(--muted); }
-  .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
-
-  .skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 48px; margin-top: 36px; }
-  .skill h3 { font-size: 1.15rem; margin-bottom: 12px; }
-
-  .jobs { margin-top: 36px; }
-  .job { display: grid; grid-template-columns: 280px 1fr; gap: 40px; padding: 32px 0; border-top: 1px solid var(--rule); }
-  .job:first-child { border-top: 0; padding-top: 0; }
-  .loc { font-size: 0.9rem; color: var(--muted); margin-top: 6px; }
-  .about { font-style: italic; color: var(--muted); }
-  .role { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
-  .role strong { color: var(--ink); font-weight: 600; }
-  .role span { font-size: 0.9rem; color: var(--muted); }
-  .bullets { padding-left: 1.1em; margin: 14px 0 0; }
-  .bullets li { margin-bottom: 8px; }
-
-  .two { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; }
-  .edu, .langs { list-style: none; padding: 0; margin: 28px 0 0; }
-  .edu li { display: grid; gap: 2px; padding: 16px 0; border-bottom: 1px solid var(--rule); }
-  .edu strong, .langs strong { font-family: var(--serif); font-weight: 500; font-size: 1.15rem; color: var(--ink); }
-  .dates, .note { font-size: 0.85rem; color: var(--muted); }
-  .langs li { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
-  .langs span { color: var(--muted); font-size: 0.95rem; text-align: right; }
-
-  @media (max-width: 900px) {
-    .intro, .two, .job { grid-template-columns: 1fr; gap: 24px; }
-    .intro { padding-top: 48px; }
-    .skills { grid-template-columns: 1fr; }
+  .head { padding-top: 72px; padding-bottom: 32px; }
+  .head h1 { margin-bottom: 32px; }
+  .small { font-size: 0.9rem; }
+  .job { margin-bottom: 40px; }
+  .job:last-child { margin-bottom: 0; }
+  .job h2 { margin-bottom: 10px; }
+  .role { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 0 2px; font-size: 0.95rem; }
+  .job ul { padding-left: 1.1em; margin: 12px 0 0; font-size: 0.95rem; }
+  .job li { margin-bottom: 6px; }
+  .skills { display: grid; grid-template-columns: 160px 1fr; gap: 14px 24px; margin: 0; font-size: 0.95rem; }
+  .skills dt { color: var(--ink); }
+  .skills dd { margin: 0; }
+  @media (max-width: 640px) {
+    .head { padding-top: 40px; }
+    .skills { grid-template-columns: 1fr; gap: 4px; }
+    .skills dd { margin-bottom: 12px; }
   }
 </style>

@@ -1,7 +1,9 @@
 ---
 title: Western Cape metropolitan innovation diagnostic
 summary: An innovation diagnostic across 11 municipalities in South Africa, combining urban, economic and university-research data into a common set of KPIs.
-context: Aretian · South Africa
+category: urban-analytics
+context: Aretian
+location: Western Cape, South Africa
 order: 4
 featured: true
 tags: [Economic analysis, KPIs, International]

@@ -1,7 +1,9 @@
 ---
 title: Flood risk, green infrastructure and climate resilience
 summary: A digital-twin framework to simulate flood risk and find parcels for sustainable drainage, plus 10 heat and flood recommendations for a Puig Foundation project.
-context: Aretian · Bessó Digital Metropolità de Barcelona
+category: urban-analytics
+context: Aretian
+location: Barcelona, Spain
 order: 3
 featured: true
 tags: [Climate resilience, Geospatial, Digital twins]

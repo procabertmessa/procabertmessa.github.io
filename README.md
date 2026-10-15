@@ -31,7 +31,19 @@ Push to `main` and the site rebuilds automatically. Set `draft: true` to hide a 
 
 ## Add a project
 
-Copy any file in `src/content/projects/`, change the text, and set `order` (lower shows first) and `featured: true` to show it on the home page.
+Copy any file in `src/content/projects/` and change the text. The fields that matter:
+
+- `category`: `urban-analytics`, `urban-design` or `architecture`. A category only shows on the Projects page once it has a project.
+- `context`: who it was for or with (e.g. `Turull Sorensen Arquitectura`, `UPC final project`).
+- `order`: lower shows first. `featured: true` also lists it on the home page.
+- Images: put them in `public/images/projects/<project-name>/` and list them:
+
+```yaml
+cover: /images/projects/my-project/cover.jpg
+images:
+  - src: /images/projects/my-project/plan.jpg
+    caption: Ground floor plan
+```
 
 ## Run locally
 
