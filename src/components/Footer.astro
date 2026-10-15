@@ -1,0 +1,30 @@
+---
+import { person } from '../data/cv';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <div>
+      <p class="big">Let's talk about cities and data.</p>
+      <p class="muted">{person.location} · {person.status}</p>
+    </div>
+    <ul class="links">
+      <li><a href={`mailto:${person.email}`}>{person.email}</a></li>
+      <li><a href={person.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+      <li><a href={`${base}${person.cv.en}`}>CV (PDF, English)</a></li>
+      <li><a href={`${base}${person.cv.es}`}>CV (PDF, Español)</a></li>
+    </ul>
+  </div>
+  <div class="container fine">© {year} {person.name}</div>
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid var(--rule); padding: 56px 0 28px; margin-top: 40px; background: var(--surface); }
+  .inner { display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .big { font-family: var(--serif); font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4em; }
+  .muted { color: var(--muted); font-size: 0.9rem; max-width: 460px; }
+  .links { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: 0.95rem; }
+  .fine { margin-top: 36px; font-size: 0.8rem; color: var(--muted); }
+</style>

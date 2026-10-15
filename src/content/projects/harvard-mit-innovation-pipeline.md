@@ -1,0 +1,19 @@
+---
+title: 'Innovation-ecosystem pipeline: Harvard & MIT'
+summary: An LLM-assisted company-classification pipeline and a three-stage Sankey model tracing how research flows into industries and sectors.
+context: Aretian · USA
+order: 5
+featured: false
+tags: [AI, Data visualisation, Innovation]
+stack: [Python, Anthropic API, Sankey diagrams, Overpass API, ArcGIS REST]
+---
+
+## What it is
+
+A study of the innovation ecosystem around Harvard and MIT: how research connects to the companies and sectors that grow around it.
+
+## What I did
+
+- Built an **LLM-assisted company-classification pipeline** using the Anthropic API.
+- Designed a **three-stage Sankey model** (researchers → innovative industries → sectors) with a custom crosswalk across changing flow units.
+- Extracted **campus building footprints** from ArcGIS FeatureServer and OpenStreetMap.
