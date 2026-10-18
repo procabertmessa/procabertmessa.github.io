@@ -31,19 +31,29 @@ Push to `main` and the site rebuilds automatically. Set `draft: true` to hide a 
 
 ## Add a project
 
-Copy any file in `src/content/projects/` and change the text. The fields that matter:
+Each project is a folder in `src/content/projects/<project-name>/` with an `index.md` and its images. The folder name becomes the address: `/projects/<project-name>/`.
 
-- `category`: `urban-analytics`, `urban-design` or `architecture`. A category only shows on the Projects page once it has a project.
-- `context`: who it was for or with (e.g. `Turull Sorensen Arquitectura`, `UPC final project`).
-- `order`: lower shows first. `featured: true` also lists it on the home page.
-- Images: put them in `public/images/projects/<project-name>/` and list them:
+**From a folder of images (easiest):**
 
-```yaml
-cover: /images/projects/my-project/cover.jpg
-images:
-  - src: /images/projects/my-project/plan.jpg
-    caption: Ground floor plan
+```sh
+npm run import-project -- "/path/to/09 CV Website/Projects/05 Winery" winery
 ```
+
+This copies the images in file-name order (the first one becomes the cover), resizes them for the web, and fills in the text from `info.md` if the folder has one (see the project template). New projects start as drafts.
+
+**By hand:** copy any project folder, rename it, and edit `index.md`. Useful fields:
+
+- `category`: `urban-analytics`, `urban-design` or `architecture`. A category only shows once it has a published project.
+- `context`, `role`, `location`, `year`: shown in the facts box.
+- `cover` and `images`: files in the same folder, e.g. `./01-cover.jpg`, each with an optional `caption`.
+- `draft: true`: hidden on the live site but visible in `npm run dev`. Change to `false` to publish.
+
+## Reorder projects
+
+Edit `src/data/projects.ts`:
+
+- `projectOrder`: the order on the Projects page. Move a line up or down.
+- `featuredProjects`: the projects on the home page, in order.
 
 ## Run locally
 

@@ -4,8 +4,6 @@ summary: An LLM-assisted company-classification pipeline and a three-stage Sanke
 category: urban-analytics
 context: Aretian
 location: Cambridge, MA, USA
-order: 5
-featured: false
 tags: [AI, Data visualisation, Innovation]
 stack: [Python, Anthropic API, Sankey diagrams, Overpass API, ArcGIS REST]
 ---

@@ -5,8 +5,6 @@ category: urban-analytics
 context: Aretian
 location: Sant Joan Despí, Spain
 year: '2026'
-order: 6
-featured: false
 tags: [Public sector, Digital twins, EU funding]
 stack: [Proposal writing, Digital twins, Public-sector innovation]
 ---

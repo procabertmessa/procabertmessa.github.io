@@ -4,8 +4,6 @@ summary: A digital-twin framework to simulate flood risk and find parcels for su
 category: urban-analytics
 context: Aretian
 location: Barcelona, Spain
-order: 3
-featured: true
 tags: [Climate resilience, Geospatial, Digital twins]
 stack: [QGIS, GeoPandas, OWSLib, ogr2ogr, OGC WFS/WMS, Copernicus, AMB, Open Data BCN]
 ---

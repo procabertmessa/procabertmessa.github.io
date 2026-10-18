@@ -1,13 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
+import { getFeaturedProjects } from '../lib/projects';
 import Base from '../layouts/Base.astro';
 import { person, experience } from '../data/cv';
 import { categoryLabel } from '../data/categories';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const projects = (await getCollection('projects'))
-  .filter((p) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order);
+const projects = await getFeaturedProjects();
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -33,7 +32,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
       {projects.map((p) => (
         <li>
           <a class="row" href={`${base}/projects/${p.id}/`}>
-            <span class="t">{p.data.title}</span>
+            <span class="t">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
             <span class="m">{categoryLabel(p.data.category)}</span>
           </a>
         </li>

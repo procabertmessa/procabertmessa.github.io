@@ -4,8 +4,6 @@ summary: An innovation diagnostic across 11 municipalities in South Africa, comb
 category: urban-analytics
 context: Aretian
 location: Western Cape, South Africa
-order: 4
-featured: true
 tags: [Economic analysis, KPIs, International]
 stack: [Python, QGIS, GeoServer WMS, Dun & Bradstreet data, KPI frameworks]
 ---

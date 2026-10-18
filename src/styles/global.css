@@ -72,6 +72,7 @@ p { margin: 0 0 1em; }
 a.row:hover { background: var(--hover); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
 .row .t { color: var(--ink); }
 .row .m { color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
+.draft { margin-left: 8px; font-size: 0.7rem; padding: 1px 6px; border: 1px solid var(--rule); border-radius: 3px; color: var(--muted); vertical-align: 2px; }
 .row .s { grid-column: 1 / -1; color: var(--muted); font-size: 0.9rem; }
 
 .prose { color: var(--body); }

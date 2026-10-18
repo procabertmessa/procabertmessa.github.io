@@ -5,8 +5,6 @@ category: urban-analytics
 context: Aretian
 location: Catalonia, Spain
 year: '2026'
-order: 1
-featured: true
 tags: [Geospatial, Real estate, Data pipelines]
 stack: [Python, GeoPandas, pyogrio, Catastro INSPIRE (CP/BU, GML), MUC zoning, GeoPackage (EPSG:25831)]
 ---

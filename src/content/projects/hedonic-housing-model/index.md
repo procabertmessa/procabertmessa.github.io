@@ -4,8 +4,6 @@ summary: A regression model that explains what drives residential prices, built 
 category: urban-analytics
 context: Aretian
 location: Catalonia, Spain
-order: 2
-featured: false
 tags: [Statistics, Housing, Digital twins]
 stack: [Python, pandas, Regression modelling]
 ---
