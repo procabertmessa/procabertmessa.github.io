@@ -1,40 +1,42 @@
 ---
-import { getProjects } from '../../lib/projects';
 import Base from '../../layouts/Base.astro';
+import { getProjects, sheetNumber } from '../../lib/projects';
 import { categories } from '../../data/categories';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const all = await getProjects();
 // Only show categories that have at least one project.
 const groups = categories
-  .map((c) => ({ ...c, items: all.filter((p) => p.data.category === c.id) }))
+  .map((c, i) => ({ ...c, series: (i + 1) * 100, items: all.filter((p) => p.data.category === c.id) }))
   .filter((g) => g.items.length > 0);
 ---
 
-<Base title="Projects" description="Urban analytics, urban design and architecture projects.">
-  <section class="container narrow head">
+<Base title="Projects" description="Urban analytics, urban design and architecture projects." sheet="P-00" sheetTitle="Register of projects">
+  <section class="pad head">
+    <p class="mono caps muted">Sheet P-00 · Register of projects</p>
     <h1>Projects</h1>
+    <p class="measure">Parcel-level data and digital twins, urban design, and architecture, from Catalonia to the Western Cape. {all.length} sheets in this set.</p>
   </section>
   {groups.map((g) => (
-    <section class="container narrow group">
-      <p class="label">{g.label}</p>
-      <ul class="rows">
+    <section class="band">
+      <div class="band-head"><span>Series {g.series} · {g.label}</span><span>{g.items.length}</span></div>
+      <ol class="register">
         {g.items.map((p) => (
           <li>
-            <a class="row" href={`${base}/projects/${p.id}/`}>
-              <span class="t">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
-              <span class="m">{[p.data.location, p.data.year].filter(Boolean).join(', ')}</span>
-              <span class="s">{p.data.context}</span>
+            <a class="reg-row" href={`${base}/projects/${p.id}/`}>
+              <span class="no">{sheetNumber(all, p.id)}</span>
+              <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
+              <span class="meta">{[p.data.location, p.data.year].filter(Boolean).join(' · ')}</span>
+              <span class="sub">{p.data.context}</span>
             </a>
           </li>
         ))}
-      </ul>
+      </ol>
     </section>
   ))}
 </Base>
 
 <style>
-  .head { padding-top: 72px; padding-bottom: 24px; }
-  .group { padding-top: 32px; padding-bottom: 16px; }
-  @media (max-width: 640px) { .head { padding-top: 40px; } }
+  .head h1 { font-size: clamp(48px, 7vw, 96px); letter-spacing: -0.045em; margin: 10px 0 20px; }
+  .head p:last-child { margin: 0; }
 </style>

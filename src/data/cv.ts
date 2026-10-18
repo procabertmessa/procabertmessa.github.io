@@ -107,8 +107,8 @@ export const education = [
 ];
 
 export const languages = [
-  { name: 'Spanish', level: 'Native' },
-  { name: 'Catalan', level: 'Native' },
-  { name: 'English', level: 'Professional working proficiency' },
-  { name: 'French', level: 'Basic' },
+  { name: 'Spanish', code: 'ES', level: 'Native' },
+  { name: 'Catalan', code: 'CA', level: 'Native' },
+  { name: 'English', code: 'EN', level: 'Professional working proficiency' },
+  { name: 'French', code: 'FR', level: 'Basic' },
 ];

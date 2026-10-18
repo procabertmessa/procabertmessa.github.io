@@ -1,82 +1,97 @@
 ---
 import { getCollection } from 'astro:content';
-import { getFeaturedProjects } from '../lib/projects';
 import Base from '../layouts/Base.astro';
+import ParcelMap from '../components/ParcelMap.astro';
+import { getProjects, getFeaturedProjects, sheetNumber } from '../lib/projects';
 import { person, experience } from '../data/cv';
-import { categoryLabel } from '../data/categories';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const projects = await getFeaturedProjects();
+const all = await getProjects();
+const featured = await getFeaturedProjects();
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+const short = { 'urban-analytics': 'Data', 'urban-design': 'Urban', architecture: 'Arch' } as const;
+const span = (j: (typeof experience)[number]) =>
+  `${j.roles[j.roles.length - 1].dates.split('–')[0].trim()} – ${j.roles[0].dates.split('–')[1].trim()}`;
 ---
 
-<Base>
-  <section class="container narrow intro">
-    <h1>{person.shortName}</h1>
-    <p class="role">{person.headline}, Barcelona</p>
-    <p class="lede">{person.intro}</p>
-    <p class="links">
-      <a href={`mailto:${person.email}`}>Email</a>
-      <a href={person.linkedin} rel="me noopener" target="_blank">LinkedIn</a>
-      <a href={`${base}${person.cv.en}`}>CV (EN)</a>
-      <a href={`${base}${person.cv.es}`}>CV (ES)</a>
-    </p>
-  </section>
-
-  <section class="container narrow section">
-    <p class="label">Selected work</p>
-    <ul class="rows">
-      {projects.map((p) => (
-        <li>
-          <a class="row" href={`${base}/projects/${p.id}/`}>
-            <span class="t">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
-            <span class="m">{categoryLabel(p.data.category)}</span>
-          </a>
-        </li>
-      ))}
-    </ul>
-    <p class="more"><a href={`${base}/projects/`}>All projects</a></p>
-  </section>
-
-  <section class="container narrow section">
-    <p class="label">Experience</p>
-    <ul class="rows">
-      {experience.map((j) => (
-        <li>
-          <div class="row">
-            <span class="t">{j.roles[0].title}, <span class="muted">{j.org}</span></span>
-            <span class="m">{j.roles[j.roles.length - 1].dates.split('–')[0].trim()} – {j.roles[0].dates.split('–')[1].trim()}</span>
-          </div>
-        </li>
-      ))}
-    </ul>
-    <p class="more"><a href={`${base}/about/`}>More about me</a></p>
-  </section>
-
-  {posts.length > 0 && (
-    <section class="container narrow section">
-      <p class="label">Writing</p>
-      <ul class="rows">
-        {posts.map((p) => (
+<Base sheet="00" sheetTitle="Cover sheet">
+  <section class="hero">
+    <div class="map-area">
+      <ParcelMap />
+      <div class="intro">
+        <h1><span>Designing</span><span>cities with</span><span>evidence.</span></h1>
+        <p class="mono lede">{person.intro} {person.location}.</p>
+      </div>
+    </div>
+    <aside class="works">
+      <div class="band-head"><span>Schedule of works</span><span>Selected</span></div>
+      <ol class="register">
+        {featured.map((p) => (
           <li>
-            <a class="row" href={`${base}/blog/${p.id}/`}>
-              <span class="t">{p.data.title}</span>
-              <span class="m">{fmt(p.data.date)}</span>
+            <a class="reg-row" href={`${base}/projects/${p.id}/`}>
+              <span class="no">{sheetNumber(all, p.id)}</span>
+              <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
+              <span class="meta">{short[p.data.category]}</span>
             </a>
           </li>
         ))}
-      </ul>
+      </ol>
+      <a class="all mono" href={`${base}/projects/`}>→ Full register ({all.length} projects)</a>
+    </aside>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span>Revision history</span><span>Career</span></div>
+    <ol class="register">
+      {experience.map((j, i) => (
+        <li>
+          <div class="reg-row">
+            <span class="no">Rev. {String.fromCharCode(68 - i)}</span>
+            <span class="title">{j.roles[0].title} <span class="muted">· {j.org}</span></span>
+            <span class="meta">{span(j)}</span>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <a class="all mono band-link" href={`${base}/about/`}>→ Full profile (A-01)</a>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="band">
+      <div class="band-head"><span>Notes</span><span>Blog</span></div>
+      <ol class="register">
+        {posts.map((p, i) => (
+          <li>
+            <a class="reg-row" href={`${base}/blog/${p.id}/`}>
+              <span class="no">B-{String(i + 1).padStart(2, '0')}</span>
+              <span class="title">{p.data.title}</span>
+              <span class="meta">{fmt(p.data.date)}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
     </section>
   )}
 </Base>
 
 <style>
-  .intro { padding-top: 72px; padding-bottom: 56px; }
-  .role { color: var(--muted); margin: 8px 0 32px; }
-  .links { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 32px; font-size: 0.95rem; }
-  .more { margin-top: 20px; font-size: 0.9rem; }
-  @media (max-width: 640px) { .intro { padding-top: 40px; } }
+  .hero { display: grid; grid-template-columns: 1fr 380px; min-height: min(78vh, 760px); }
+  .map-area { position: relative; overflow: hidden; display: flex; align-items: flex-end; }
+  .intro { position: relative; padding: 56px 40px 44px; pointer-events: none; }
+  h1 { font-size: clamp(54px, 8.6vw, 132px); line-height: 0.88; letter-spacing: -0.045em; }
+  h1 span { display: block; }
+  .lede { font-size: 12px; line-height: 1.65; max-width: 460px; margin: 24px 0 0; color: var(--ink); background: var(--paper); padding: 6px 8px 6px 0; }
+  .works { border-left: 1px solid var(--line); display: flex; flex-direction: column; background: var(--paper); position: relative; }
+  .works .register { flex: 1; }
+  .all { display: block; padding: 14px 18px; border-top: 1px solid var(--line); text-decoration: underline; }
+  .band-link { border-top: 1px solid var(--line); }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .map-area { min-height: 460px; }
+    .intro { padding: 32px 16px 28px; }
+    .works { border-left: 0; border-top: 1px solid var(--line); }
+  }
 </style>

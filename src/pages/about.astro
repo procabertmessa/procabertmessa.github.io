@@ -4,78 +4,120 @@ import { person, skills, experience, education, languages } from '../data/cv';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<Base title="About" description={person.profile[0]}>
-  <section class="container narrow head">
-    <h1>About</h1>
-    <div class="prose">
-      {person.profile.map((p, i) => <p class={i === 0 ? 'lede' : ''}>{p}</p>)}
-      <p class="muted small">{person.status}</p>
-      <p class="small">Download CV: <a href={`${base}${person.cv.en}`}>English</a> · <a href={`${base}${person.cv.es}`}>Español</a></p>
-    </div>
+<Base title="About" description={person.profile[0]} sheet="A-01" sheetTitle="Profile">
+  <section class="pad head">
+    <p class="mono caps muted">Sheet A-01 · Profile</p>
+    <h1>Architect by training, data scientist by practice.</h1>
   </section>
 
-  <section class="container narrow section">
-    <p class="label">Experience</p>
-    {experience.map((j) => (
+  <section class="band split">
+    <div class="pad prose measure">
+      {person.profile.map((p, i) => <p class={i === 0 ? 'first' : ''}>{p}</p>)}
+    </div>
+    <aside class="side">
+      <div class="band-head"><span>Status</span></div>
+      <p class="pad-s">{person.status}</p>
+      <div class="band-head top"><span>Downloads</span></div>
+      <ul class="dl mono">
+        <li><a href={`${base}${person.cv.en}`}>↓ CV, English (PDF)</a></li>
+        <li><a href={`${base}${person.cv.es}`}>↓ CV, Español (PDF)</a></li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span>Revision history · Experience</span><span>{experience.length}</span></div>
+    {experience.map((j, i) => (
       <article class="job">
-        <h2>{j.org} <span class="muted">· {j.location}</span></h2>
-        {j.roles.map((r) => (
-          <p class="role"><span>{r.title}</span><span class="muted">{r.dates}</span></p>
-        ))}
-        <ul>{j.bullets.map((b) => <li>{b}</li>)}</ul>
+        <div class="job-side">
+          <span class="mono red">Rev. {String.fromCharCode(68 - i)}</span>
+          <h2>{j.org}</h2>
+          <span class="mono muted">{j.location}</span>
+        </div>
+        <div>
+          {j.about && <p class="about">{j.about}</p>}
+          {j.roles.map((r) => (
+            <p class="role"><span>{r.title}</span><span class="mono muted">{r.dates}</span></p>
+          ))}
+          <ul>{j.bullets.map((b) => <li>{b}</li>)}</ul>
+        </div>
       </article>
     ))}
   </section>
 
-  <section class="container narrow section">
-    <p class="label">Skills</p>
+  <section class="band">
+    <div class="band-head"><span>Legend · Skills</span></div>
     <dl class="skills">
       {skills.map((s) => (
-        <>
-          <dt>{s.group}</dt>
-          <dd>{s.items.join(', ')}</dd>
-        </>
+        <div>
+          <dt class="mono caps">{s.group}</dt>
+          <dd>{s.items.join(' · ')}</dd>
+        </div>
       ))}
     </dl>
   </section>
 
-  <section class="container narrow section">
-    <p class="label">Education</p>
-    <ul class="rows">
-      {education.map((e) => (
-        <li>
-          <div class="row">
-            <span class="t">{e.title}</span>
-            <span class="m">{e.dates}</span>
-            <span class="s">{e.school}</span>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section class="container narrow section">
-    <p class="label">Languages</p>
-    <p>{languages.map((l) => `${l.name} (${l.level.toLowerCase()})`).join(', ')}</p>
+  <section class="band two">
+    <div>
+      <div class="band-head"><span>Education</span></div>
+      <ol class="register">
+        {education.map((e) => (
+          <li>
+            <div class="reg-row">
+              <span class="no">{e.dates.split('–')[1]?.trim() ?? e.dates}</span>
+              <span class="title">{e.title}</span>
+              <span class="meta"></span>
+              <span class="sub">{e.school}</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <div class="langs">
+      <div class="band-head"><span>Languages</span></div>
+      <ol class="register">
+        {languages.map((l) => (
+          <li>
+            <div class="reg-row"><span class="no">{l.code}</span><span class="title">{l.name}</span><span class="meta">{l.level}</span></div>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 </Base>
 
 <style>
-  .head { padding-top: 72px; padding-bottom: 32px; }
-  .head h1 { margin-bottom: 32px; }
-  .small { font-size: 0.9rem; }
-  .job { margin-bottom: 40px; }
-  .job:last-child { margin-bottom: 0; }
-  .job h2 { margin-bottom: 10px; }
-  .role { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 0 2px; font-size: 0.95rem; }
-  .job ul { padding-left: 1.1em; margin: 12px 0 0; font-size: 0.95rem; }
+  .head h1 { font-size: clamp(40px, 6vw, 84px); letter-spacing: -0.04em; margin-top: 10px; max-width: 14ch; }
+  .split { display: grid; grid-template-columns: 1fr 340px; }
+  .prose .first { font-size: 21px; line-height: 1.45; color: var(--ink); }
+  .side { border-left: 1px solid var(--line); }
+  .pad-s { padding: 14px 18px; margin: 0; font-size: 14px; }
+  .top { border-top: 1px solid var(--line); }
+  .dl { list-style: none; margin: 0; padding: 14px 18px; display: grid; gap: 8px; font-size: 12px; }
+
+  .job { display: grid; grid-template-columns: 300px 1fr; gap: 32px; padding: 26px 18px; border-bottom: 0.5px solid var(--faint); }
+  .job:last-child { border-bottom: 0; }
+  .job-side { display: flex; flex-direction: column; gap: 6px; }
+  .job h2 { font-size: 22px; letter-spacing: -0.02em; line-height: 1.15; }
+  .about { font-size: 14px; color: var(--muted); }
+  .role { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 0 2px; color: var(--ink); }
+  .job ul { padding-left: 1.1em; margin: 12px 0 0; font-size: 15px; }
   .job li { margin-bottom: 6px; }
-  .skills { display: grid; grid-template-columns: 160px 1fr; gap: 14px 24px; margin: 0; font-size: 0.95rem; }
-  .skills dt { color: var(--ink); }
-  .skills dd { margin: 0; }
-  @media (max-width: 640px) {
-    .head { padding-top: 40px; }
-    .skills { grid-template-columns: 1fr; gap: 4px; }
-    .skills dd { margin-bottom: 12px; }
+  .job li::marker { color: var(--red); }
+
+  .skills { margin: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .skills div { padding: 18px; border-bottom: 0.5px solid var(--faint); }
+  .skills div:nth-child(odd) { border-right: 1px solid var(--line); }
+  .skills dt { color: var(--red); margin-bottom: 6px; }
+  .skills dd { margin: 0; font-size: 15px; color: var(--ink); }
+
+  .two { display: grid; grid-template-columns: 1.4fr 1fr; }
+  .langs { border-left: 1px solid var(--line); }
+
+  @media (max-width: 860px) {
+    .split, .two, .job, .skills { grid-template-columns: 1fr; }
+    .side, .langs { border-left: 0; border-top: 1px solid var(--line); }
+    .skills div:nth-child(odd) { border-right: 0; }
+    .job { gap: 14px; padding: 22px 14px; }
   }
 </style>

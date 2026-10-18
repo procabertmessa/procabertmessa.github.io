@@ -1,72 +1,116 @@
 ---
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
-import { getProjects } from '../../lib/projects';
 import Base from '../../layouts/Base.astro';
+import { getProjects, sheetNumber } from '../../lib/projects';
 import { categoryLabel } from '../../data/categories';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
   return projects.map((p, i) => ({
     params: { slug: p.id },
-    props: { project: p, next: projects[(i + 1) % projects.length] },
+    props: { project: p, all: projects, prev: projects[(i - 1 + projects.length) % projects.length], next: projects[(i + 1) % projects.length] },
   }));
 }
 
-const { project, next } = Astro.props;
+const { project, all, prev, next } = Astro.props;
 const { Content } = await render(project);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const d = project.data;
+const no = sheetNumber(all, project.id);
 const facts = [
   ['Type', categoryLabel(d.category)],
   ['With', d.context],
   ['Role', d.role],
-  ['Where', d.location],
-  ['When', d.year],
-  ['Tools', d.stack.join(', ')],
+  ['Location', d.location],
+  ['Year', d.year],
 ].filter(([, v]) => v) as [string, string][];
 ---
 
-<Base title={d.title} description={d.summary}>
-  <article class="container narrow page">
-    <a class="back" href={`${base}/projects/`}>← Projects</a>
-    <h1>{d.title}</h1>
-    <p class="lede">{d.summary}</p>
-    <dl class="facts">
-      {facts.map(([k, v]) => (<><dt>{k}</dt><dd>{v}</dd></>))}
-    </dl>
-    {d.draft && <p class="draft-note">Draft: hidden on the live site until <code>draft: false</code>.</p>}
-    {d.cover && <figure class="wide cover"><Image src={d.cover} alt={d.title} widths={[800, 1400, 2000]} sizes="(max-width: 1000px) 100vw, 960px" loading="eager" /></figure>}
-    <div class="prose"><Content /></div>
-    {d.images.length > 0 && (
-      <div class="wide gallery">
-        {d.images.map((img) => (
-          <figure>
-            <Image src={img.src} alt={img.caption ?? d.title} widths={[800, 1400, 2000]} sizes="(max-width: 1000px) 100vw, 960px" />
-            {img.caption && <figcaption>{img.caption}</figcaption>}
-          </figure>
-        ))}
-      </div>
+<Base title={d.title} description={d.summary} sheet={no} sheetTitle={d.title}>
+  <section class="pad head">
+    <p class="mono caps muted"><a href={`${base}/projects/`}>P-00 Register</a> / <span class="red">{no}</span></p>
+    <h1>{d.title}{d.draft && <span class="draft">Draft</span>}</h1>
+    <p class="lede measure">{d.summary}</p>
+  </section>
+
+  <dl class="facts">
+    {facts.map(([k, v]) => (
+      <div><dt>{k}</dt><dd>{v}</dd></div>
+    ))}
+  </dl>
+
+  {d.cover && (
+    <figure class="plate cover">
+      <Image src={d.cover} alt={d.title} widths={[800, 1400, 2000]} sizes="(max-width: 1200px) 100vw, 1200px" loading="eager" />
+      <figcaption class="mono"><span class="red">Fig. 01</span> {d.title}</figcaption>
+    </figure>
+  )}
+
+  <section class="band body">
+    <div class="pad prose measure"><Content /></div>
+    {d.stack.length > 0 && (
+      <aside class="legend">
+        <div class="band-head"><span>Legend · Tools</span></div>
+        <ul class="mono">{d.stack.map((s) => <li>{s}</li>)}</ul>
+      </aside>
     )}
-    <p class="next"><span class="muted">Next</span> <a href={`${base}/projects/${next.id}/`}>{next.data.title}</a></p>
-  </article>
+  </section>
+
+  {d.images.length > 0 && (
+    <section class="band gallery">
+      {d.images.map((img, i) => (
+        <figure class="plate">
+          <Image src={img.src} alt={img.caption ?? d.title} widths={[800, 1400, 2000]} sizes="(max-width: 1200px) 100vw, 1200px" />
+          <figcaption class="mono"><span class="red">Fig. {String(i + 2).padStart(2, '0')}</span> {img.caption ?? ''}</figcaption>
+        </figure>
+      ))}
+    </section>
+  )}
+
+  <nav class="band pager" aria-label="More projects">
+    <a href={`${base}/projects/${prev.id}/`}><span class="mono muted">← {sheetNumber(all, prev.id)}</span>{prev.data.title}</a>
+    <a class="right" href={`${base}/projects/${next.id}/`}><span class="mono muted">{sheetNumber(all, next.id)} →</span>{next.data.title}</a>
+  </nav>
 </Base>
 
 <style>
-  .page { padding-top: 48px; }
-  .back { display: inline-block; font-size: 0.9rem; margin-bottom: 40px; color: var(--muted); text-decoration: none; }
-  .back:hover { color: var(--ink); }
-  h1 { margin-bottom: 20px; }
-  .facts { display: grid; grid-template-columns: 80px 1fr; gap: 6px 20px; margin: 32px 0; padding: 20px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); font-size: 0.9rem; }
-  .facts dt { color: var(--muted); }
-  .facts dd { margin: 0; color: var(--ink); }
-  /* Images break out of the text column to the full page width. */
-  .wide { width: min(912px, calc(100vw - 48px)); margin-left: 50%; transform: translateX(-50%); }
-  .wide :global(img) { width: 100%; height: auto; }
-  .cover { margin-top: 32px; margin-bottom: 40px; }
-  .draft-note { font-size: 0.85rem; color: var(--muted); border: 1px dashed var(--rule); padding: 10px 14px; }
-  .gallery { display: grid; gap: 48px; margin-top: 56px; }
-  .gallery figure { margin: 0; }
-  figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
-  .next { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--rule); font-size: 0.95rem; }
+  .head h1 { font-size: clamp(40px, 6vw, 84px); letter-spacing: -0.04em; margin: 10px 0 20px; }
+  .head .lede { font-size: 20px; line-height: 1.45; color: var(--ink); margin: 0; }
+  .head a { text-decoration: none; }
+
+  .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); border-top: 1px solid var(--line); }
+  .facts div { padding: 10px 18px; border-left: 1px solid var(--line); }
+  .facts div:first-child { border-left: 0; }
+  .facts dt { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .facts dd { margin: 2px 0 0; color: var(--ink); font-size: 14px; }
+
+  .plate { margin: 0; border-top: 1px solid var(--line); }
+  /* Drawings sit on the sheet with a margin and never exceed the screen height. */
+  .plate :global(img) { width: auto; max-width: 100%; height: auto; max-height: 86vh; margin: 0 auto; padding: 28px 18px; object-fit: contain; }
+  .cover :global(img) { padding: 0; width: 100%; max-height: none; }
+  figcaption { padding: 10px 18px; border-top: 0.5px solid var(--faint); color: var(--ink); }
+
+  .body { display: grid; grid-template-columns: 1fr 280px; }
+  .legend { border-left: 1px solid var(--line); }
+  .legend ul { list-style: none; margin: 0; padding: 14px 18px; display: grid; gap: 6px; color: var(--ink); }
+  .legend li::before { content: '■ '; color: var(--red); }
+
+  .gallery .plate:first-child { border-top: 0; }
+
+  .pager { display: grid; grid-template-columns: 1fr 1fr; }
+  .pager a { display: flex; flex-direction: column; gap: 4px; padding: 18px; text-decoration: none; color: var(--ink); font-size: 18px; letter-spacing: -0.01em; }
+  .pager a:hover { background: var(--hover-bg); color: var(--hover-fg); }
+  .pager a:hover span { color: var(--hover-fg); }
+  .pager .right { border-left: 1px solid var(--line); text-align: right; }
+
+  @media (max-width: 860px) {
+    .body { grid-template-columns: 1fr; }
+    .legend { border-left: 0; border-top: 1px solid var(--line); }
+    .facts div { border-top: 0.5px solid var(--faint); }
+  }
+  @media (max-width: 520px) {
+    .pager { grid-template-columns: 1fr; }
+    .pager .right { border-left: 0; border-top: 1px solid var(--line); }
+  }
 </style>

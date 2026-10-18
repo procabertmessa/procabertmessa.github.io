@@ -3,20 +3,27 @@ import { person } from '../data/cv';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const links = [
-  { href: '/projects/', label: 'Projects' },
-  { href: '/about/', label: 'About' },
-  { href: '/blog/', label: 'Blog' },
+  { href: '/projects/', label: 'Projects', code: 'P-00' },
+  { href: '/about/', label: 'About', code: 'A-01' },
+  { href: '/blog/', label: 'Blog', code: 'B-00' },
 ];
 const path = Astro.url.pathname.replace(base, '') || '/';
 ---
 
-<header class="container bar">
-  <a class="brand" href={`${base}/`}>{person.shortName}</a>
+<header class="bar">
+  <a class="brand" href={`${base}/`}>
+    <span class="name">{person.shortName}</span>
+    <span class="tag mono muted">Urban data · Urban design · Architecture</span>
+  </a>
   <nav aria-label="Main">
     {links.map((l) => (
-      <a href={`${base}${l.href}`} aria-current={path.startsWith(l.href) ? 'page' : undefined}>{l.label}</a>
+      <a href={`${base}${l.href}`} aria-current={path.startsWith(l.href) ? 'page' : undefined}>
+        <span class="mono code">{l.code}</span>{l.label}
+      </a>
     ))}
-    <button class="theme" type="button" aria-label="Toggle dark mode"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+    <button class="theme" type="button" aria-label="Toggle dark mode">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>
+    </button>
   </nav>
 </header>
 
@@ -29,16 +36,29 @@ const path = Astro.url.pathname.replace(base, '') || '/';
     const next = dark ? 'light' : 'dark';
     root.dataset.theme = next;
     try { localStorage.setItem('theme', next); } catch (e) {}
+    window.dispatchEvent(new Event('themechange'));
   });
 </script>
 
 <style>
-  .bar { display: flex; align-items: center; justify-content: space-between; height: 80px; gap: 16px; }
-  .brand { color: var(--ink); text-decoration: none; font-weight: 500; letter-spacing: -0.01em; }
-  nav { display: flex; align-items: center; gap: 24px; }
-  nav a { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
-  nav a:hover, nav a[aria-current='page'] { color: var(--ink); }
-  .theme { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 4px; display: grid; place-items: center; }
-  .theme:hover { color: var(--ink); }
-  @media (max-width: 480px) { nav { gap: 16px; } }
+  .bar { display: flex; justify-content: space-between; align-items: stretch; margin: 5px 5px 0; border-bottom: 1px solid var(--line); min-height: 58px; position: relative; z-index: 3; background: var(--paper); }
+  .brand { display: flex; align-items: baseline; gap: 14px; padding: 16px 18px; text-decoration: none; color: var(--ink); }
+  .brand:hover { color: var(--ink); }
+  .name { font-weight: 600; letter-spacing: -0.01em; font-size: 15px; }
+  nav { display: flex; }
+  nav a { display: flex; flex-direction: column; justify-content: center; padding: 0 22px; border-left: 1px solid var(--line); text-decoration: none; font-size: 14px; color: var(--ink); }
+  nav a .code { font-size: 10px; color: var(--muted); }
+  nav a:hover, nav a[aria-current='page'] { background: var(--hover-bg); color: var(--hover-fg); }
+  nav a:hover .code, nav a[aria-current='page'] .code { color: var(--hover-fg); }
+  .theme { border: 0; border-left: 1px solid var(--line); background: none; color: var(--ink); padding: 0 18px; cursor: pointer; display: grid; place-items: center; }
+  .theme:hover { background: var(--hover-bg); color: var(--hover-fg); }
+  @media (max-width: 760px) {
+    .tag { display: none; }
+  }
+  @media (max-width: 520px) {
+    .brand { padding: 14px; }
+    nav a { padding: 0 12px; font-size: 13px; }
+    nav a .code { display: none; }
+    .theme { padding: 0 12px; }
+  }
 </style>

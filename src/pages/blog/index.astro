@@ -6,33 +6,38 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 ---
 
-<Base title="Blog" description="Notes on urban data, digital twins, planning and design.">
-  <section class="container narrow head">
+<Base title="Blog" description="Notes on urban data, digital twins, planning and design." sheet="B-00" sheetTitle="Notes">
+  <section class="pad head">
+    <p class="mono caps muted">Sheet B-00 · Notes</p>
     <h1>Blog</h1>
+    <p class="measure">Notes on urban data, digital twins, planning and design.</p>
   </section>
-  <section class="container narrow">
+  <section class="band">
+    <div class="band-head"><span>Index of notes</span><span>{posts.length}</span></div>
     {posts.length === 0 ? (
-      <p class="muted">No posts yet.</p>
+      <p class="empty mono">No notes issued yet.</p>
     ) : (
-      <ul class="rows">
-        {posts.map((p) => (
+      <ol class="register">
+        {posts.map((p, i) => (
           <li>
-            <a class="row" href={`${base}/blog/${p.id}/`}>
-              <span class="t">{p.data.title}</span>
-              <span class="m">{fmt(p.data.date)}</span>
-              <span class="s">{p.data.description}</span>
+            <a class="reg-row" href={`${base}/blog/${p.id}/`}>
+              <span class="no">B-{String(posts.length - i).padStart(2, '0')}</span>
+              <span class="title">{p.data.title}</span>
+              <span class="meta">{fmt(p.data.date)}</span>
+              <span class="sub">{p.data.description}</span>
             </a>
           </li>
         ))}
-      </ul>
+      </ol>
     )}
   </section>
 </Base>
 
 <style>
-  .head { padding-top: 72px; padding-bottom: 32px; }
-  @media (max-width: 640px) { .head { padding-top: 40px; } }
+  .head h1 { font-size: clamp(48px, 7vw, 96px); letter-spacing: -0.045em; margin: 10px 0 20px; }
+  .head p:last-child { margin: 0; }
+  .empty { padding: 40px 18px; color: var(--muted); margin: 0; }
 </style>

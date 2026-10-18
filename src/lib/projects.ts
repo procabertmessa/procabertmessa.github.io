@@ -22,3 +22,9 @@ export async function getFeaturedProjects(): Promise<Project[]> {
     .map((id) => all.find((p) => p.id === id))
     .filter((p): p is Project => Boolean(p));
 }
+
+/** Sheet number for a project, from its position in the published order: P-01, P-02 ... */
+export function sheetNumber(all: Project[], id: string): string {
+  const i = all.findIndex((p) => p.id === id);
+  return `P-${String(i + 1).padStart(2, '0')}`;
+}

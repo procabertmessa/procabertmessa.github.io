@@ -1,15 +1,19 @@
 ---
 import '../styles/global.css';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import TitleBlock from '../components/TitleBlock.astro';
 import { person } from '../data/cv';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Sheet number shown in the title block, e.g. "P-01" */
+  sheet?: string;
+  /** Sheet title shown in the title block */
+  sheetTitle?: string;
 }
 
-const { title, description = person.intro } = Astro.props;
+const { title, description = person.intro, sheet = '00', sheetTitle = 'Index' } = Astro.props;
 const fullTitle = title ? `${title} · ${person.shortName}` : `${person.shortName} · ${person.headline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -30,7 +34,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <script is:inline>
@@ -42,10 +46,36 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <a class="sr-only" href="#main">Skip to content</a>
-    <Header />
-    <main id="main">
-      <slot />
-    </main>
-    <Footer />
+    <div class="sheet">
+      <div class="refs" aria-hidden="true">
+        {'ABCDEFGH'.split('').map((l, i) => <span class="col" style={`left:${((i + 0.5) / 8) * 100}%`}>{l}</span>)}
+        {[1, 2, 3, 4, 5, 6].map((n, i) => <span class="row" style={`top:${((i + 0.5) / 6) * 100}%`}>{n}</span>)}
+      </div>
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <TitleBlock sheet={sheet} sheetTitle={sheetTitle} />
+    </div>
   </body>
 </html>
+
+<style>
+  .sheet {
+    position: relative;
+    margin: var(--frame);
+    min-height: calc(100vh - 2 * var(--frame));
+    border: 1.5px solid var(--line);
+    display: flex; flex-direction: column;
+  }
+  /* Inner hairline of the drawing frame */
+  .sheet::before { content: ''; position: absolute; inset: 5px; border: 0.5px solid var(--line); pointer-events: none; z-index: 2; }
+  main { flex: 1; margin: 0 5px; position: relative; }
+  .refs { position: absolute; inset: 0; pointer-events: none; font-family: var(--mono); font-size: 9px; color: var(--muted); }
+  .refs span { position: absolute; }
+  .refs .col { top: -14px; transform: translateX(-50%); }
+  .refs .row { left: -12px; transform: translateY(-50%); }
+  @media (max-width: 640px) {
+    .refs { display: none; }
+  }
+</style>
