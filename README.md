@@ -1,6 +1,6 @@
 # Pablo Rocabert · personal website
 
-Built with [Astro](https://astro.build) and published on GitHub Pages at https://procabert.github.io.
+Built with [Astro](https://astro.build) and published on GitHub Pages at https://procabertmessa.github.io.
 
 ## Where things live
 
