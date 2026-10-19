@@ -86,7 +86,7 @@ const facts = [
   .facts dd { margin: 2px 0 0; color: var(--ink); font-size: 14px; }
 
   .body { display: grid; grid-template-columns: 1fr 280px; }
-  .body.has-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .body.has-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } /* divider lines up with the facts and pager */
   .side { border-left: 1px solid var(--line); display: flex; flex-direction: column; }
   .has-side .side .flow { position: sticky; top: 0; height: min(78vh, 720px); }
   .top { border-top: 1px solid var(--line); }
