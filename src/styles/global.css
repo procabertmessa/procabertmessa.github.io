@@ -1,5 +1,22 @@
 /* Drawing-set design: every page is a sheet with a frame, sheet numbers and a title block. */
 :root {
+  /* Dark is the default; light is available from the toggle. */
+  --paper: #0f1012;
+  --ink: #ece8df;
+  --body: #c9c5bc;
+  --line: #ece8df;
+  --faint: #2f3236;
+  --muted: #878985;
+  --red: #ff5b3f;
+  --hover-bg: #ece8df;
+  --hover-fg: #0f1012;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --sans: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+  --frame: 18px;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
   --paper: #f4f2ec;
   --ink: #161616;
   --body: #2c2c2a;
@@ -9,38 +26,7 @@
   --red: #d2462d;
   --hover-bg: #161616;
   --hover-fg: #f4f2ec;
-  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-  --sans: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
-  --frame: 18px;
   color-scheme: light;
-}
-
-:root[data-theme='dark'] {
-  --paper: #121417;
-  --ink: #ece8df;
-  --body: #cdc9c0;
-  --line: #ece8df;
-  --faint: #34383d;
-  --muted: #8b8d8f;
-  --red: #ff6b4f;
-  --hover-bg: #ece8df;
-  --hover-fg: #121417;
-  color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --paper: #121417;
-    --ink: #ece8df;
-    --body: #cdc9c0;
-    --line: #ece8df;
-    --faint: #34383d;
-    --muted: #8b8d8f;
-    --red: #ff6b4f;
-    --hover-bg: #ece8df;
-    --hover-fg: #121417;
-    color-scheme: dark;
-  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }

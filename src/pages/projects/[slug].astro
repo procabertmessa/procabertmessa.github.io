@@ -38,6 +38,9 @@ const facts = [
     {facts.map(([k, v]) => (
       <div><dt>{k}</dt><dd>{v}</dd></div>
     ))}
+    {d.url && (
+      <div><dt>Live</dt><dd><a href={d.url} rel="noopener" target="_blank">{d.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</a></dd></div>
+    )}
   </dl>
 
   {d.cover && (

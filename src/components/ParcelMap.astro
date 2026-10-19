@@ -28,9 +28,9 @@
     function readColors() {
       const s = getComputedStyle(document.documentElement);
       const ink = s.getPropertyValue('--line').trim();
-      const dark = (document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+      const dark = document.documentElement.dataset.theme !== 'light';
       colors = {
-        line: dark ? 'rgba(236,232,223,0.22)' : 'rgba(22,22,22,0.32)',
+        line: dark ? 'rgba(236,232,223,0.2)' : 'rgba(22,22,22,0.32)',
         fill: dark ? 'rgba(236,232,223,0.06)' : 'rgba(22,22,22,0.07)',
         hot: s.getPropertyValue('--red').trim() || ink,
       };
@@ -81,7 +81,6 @@
     requestAnimationFrame(draw);
     new ResizeObserver(build).observe(canvas);
     window.addEventListener('themechange', readColors);
-    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
   }
 
   document.querySelectorAll<HTMLCanvasElement>('canvas.parcel-map').forEach(start);
