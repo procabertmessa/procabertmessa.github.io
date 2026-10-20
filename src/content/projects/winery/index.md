@@ -1,5 +1,5 @@
 ---
-title: Winery
+title: Alt Penedès winery
 summary: To be written.
 category: architecture
 context: To confirm

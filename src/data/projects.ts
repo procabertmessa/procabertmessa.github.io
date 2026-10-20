@@ -4,28 +4,32 @@
 // Order on the Projects page (within each category). Move a line up or down to reorder.
 // Projects not listed here still appear, after the listed ones.
 export const projectOrder = [
-  // Urban analytics & digital twins
+  // Pablo's priority list (2026-10-20)
   'city-digital-twin',
+  'sant-boi-urban-development',
+  'apartment-muntaner',
+  'culinary-center',
+  'social-housing',
+  'winery',
+  // Others, still being prepared
+  'maap-lab',
+  'civic-facility',
   'catalonia-parcel-dataset',
   'flood-risk-climate-resilience',
   'hedonic-housing-model',
   'western-cape-innovation',
   'harvard-mit-innovation-pipeline',
   'eu-urban-initiative-bid',
-  'maap-lab',
-  // Urban design & planning
-  'sant-boi-urban-development',
-  // Architecture
-  'winery',
-  'social-housing',
-  'civic-facility',
-  'culinary-center',
 ];
 
 // Shown on the home page, in this order. Drafts are skipped automatically.
 export const featuredProjects = [
+  'city-digital-twin',
+  'culinary-center',
+  'social-housing',
+  'winery',
+  // Fallbacks while the ones above are still drafts; the home shows the first 4 published.
   'catalonia-parcel-dataset',
   'flood-risk-climate-resilience',
   'western-cape-innovation',
-  'winery',
 ];

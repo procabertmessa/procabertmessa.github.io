@@ -1,8 +1,8 @@
 ---
-title: Fent Poble — social housing in La Soledad
+title: Fent Poble — social housing competition, Palma
 summary: Social housing in Palma's La Soledad neighbourhood that rebuilds the shared street and courtyard life of the old factory district, using roofs, terraces and passages as common space and traditional bioclimatic means for comfort.
 category: architecture
-context: To confirm
+context: Turull Sorensen Arquitectura
 location: La Soledad, Palma (Mallorca)
 draft: true
 cover: ./01-street-view.jpg

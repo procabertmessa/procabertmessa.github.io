@@ -1,8 +1,8 @@
 ---
-title: Sant Boi urban development
+title: Sant Boi urban analysis
 summary: To be written.
-category: urban-design
-context: To confirm
+category: urban-analytics
+context: Aretian
 draft: true
 ---
 

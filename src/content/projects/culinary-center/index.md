@@ -1,8 +1,8 @@
 ---
-title: Culinary center
+title: Culinary Center
 summary: To be written.
 category: architecture
-context: To confirm
+context: Master’s project, La Salle – URL
 draft: true
 ---
 
