@@ -9,6 +9,7 @@
   --muted: #6f706c;
   --red: #ff5b3f;
   --dot: rgba(242, 241, 238, 0.07);
+  --blocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(242,241,238,0.09)' stroke-width='1'/%3E%3C/svg%3E");
   --hover-bg: transparent;
   --hover-fg: var(--ink);
   --wrap: 1240px;
@@ -27,6 +28,7 @@
   --muted: #8d8c87;
   --red: #d2462d;
   --dot: rgba(17, 17, 17, 0.08);
+  --blocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(17,17,17,0.10)' stroke-width='1'/%3E%3C/svg%3E");
   --hover-bg: transparent;
   --hover-fg: var(--ink);
   color-scheme: light;
@@ -43,6 +45,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
+/* Inner pages: outlines of Eixample blocks (Cerdà: 113 m blocks, 20 m streets, chamfered corners) instead of dots. */
+body.blocks { background: var(--paper) var(--blocks) center top / 160px 160px; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { color: var(--red); }

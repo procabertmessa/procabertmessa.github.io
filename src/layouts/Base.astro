@@ -11,9 +11,11 @@ interface Props {
   sheet?: string;
   /** Sheet title shown in the title block */
   sheetTitle?: string;
+  /** Eixample block background instead of the dot grid */
+  blocks?: boolean;
 }
 
-const { title, description = person.intro, sheet = '00', sheetTitle = 'Index' } = Astro.props;
+const { title, description = person.intro, sheet = '00', sheetTitle = 'Index', blocks = false } = Astro.props;
 const fullTitle = title ? `${title} · ${person.shortName}` : `${person.shortName} · ${person.headline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -44,7 +46,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       } catch (e) {}
     </script>
   </head>
-  <body>
+  <body class:list={{ blocks }}>
     <a class="sr-only" href="#main">Skip to content</a>
     <div class="sheet">
       <Header />

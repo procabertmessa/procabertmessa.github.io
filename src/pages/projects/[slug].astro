@@ -38,7 +38,7 @@ const facts = [
 ].filter(([, v]) => v) as [string, string][];
 ---
 
-<Base title={d.title} description={d.summary} sheet={no} sheetTitle={d.title}>
+<Base blocks title={d.title} description={d.summary} sheet={no} sheetTitle={d.title}>
   <section class="pad head">
     <p class="mono caps muted"><a href={`${base}/projects/`}>P-00 Register</a> / <span class="red">{no}</span></p>
     <h1>{d.title}{d.draft && <span class="draft">Draft</span>}</h1>
