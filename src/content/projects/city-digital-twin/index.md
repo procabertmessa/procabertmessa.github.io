@@ -14,7 +14,7 @@ skills:
   - Large cadastral datasets
   - Mobility data
   - Data quality & validation
-draft: true
+draft: false
 location: Catalonia, Spain
 url: https://cdt.cat
 stack:
