@@ -19,7 +19,7 @@ const full = await Promise.all(
 
 <dialog class="lightbox" data-lightbox-root data-images={JSON.stringify(full)} aria-label={`${title}: images`}>
   <div class="bar mono">
-    <span><span class="red" data-lb-index>Fig. 01</span> / {String(full.length).padStart(2, '0')}</span>
+    <span><span class="accent" data-lb-index>Fig. 01</span> / {String(full.length).padStart(2, '0')}</span>
     <span class="cap" data-lb-caption></span>
     <form method="dialog"><button class="close" aria-label="Close">Close ✕</button></form>
   </div>

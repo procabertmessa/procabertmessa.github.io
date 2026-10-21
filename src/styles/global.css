@@ -7,9 +7,8 @@
   --line: #232427;
   --faint: #1b1c1f;
   --muted: #6f706c;
-  --red: #ff5b3f;
+  --accent: #4cc38a;
   --dot: rgba(242, 241, 238, 0.07);
-  --blocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(242,241,238,0.22)' stroke-width='1.4' stroke-linecap='round' stroke-dasharray='0 5'/%3E%3C/svg%3E");
   --hover-bg: transparent;
   --hover-fg: var(--ink);
   --wrap: 1240px;
@@ -26,9 +25,8 @@
   --line: #e4e3df;
   --faint: #efeeea;
   --muted: #8d8c87;
-  --red: #d2462d;
+  --accent: #1d8a5a;
   --dot: rgba(17, 17, 17, 0.08);
-  --blocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(17,17,17,0.22)' stroke-width='1.4' stroke-linecap='round' stroke-dasharray='0 5'/%3E%3C/svg%3E");
   --hover-bg: transparent;
   --hover-fg: var(--ink);
   color-scheme: light;
@@ -45,11 +43,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-/* Projects list: Eixample blocks (Cerdà: 113 m blocks, 20 m streets, chamfered corners) traced in dots. */
-body.blocks { background: var(--paper) var(--blocks) center top / 160px 160px; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:hover { color: var(--red); }
+a:hover { color: var(--accent); }
 
 h1, h2, h3 { color: var(--ink); font-weight: 400; letter-spacing: -0.035em; line-height: 1.05; margin: 0; }
 p { margin: 0 0 1em; }
@@ -58,7 +54,7 @@ p { margin: 0 0 1em; }
 .mono { font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; }
 .caps { text-transform: uppercase; letter-spacing: 0.08em; }
 .muted { color: var(--muted); }
-.red { color: var(--red); }
+.accent { color: var(--accent); }
 
 /* Bands are horizontal strips inside the sheet, separated by drawing lines */
 .band { border-top: 0; }
@@ -95,9 +91,9 @@ a.reg-row:hover .title { color: var(--ink); }
 .prose h3 { font-size: 1.1rem; margin: 1.8em 0 0.5em; }
 .prose ul, .prose ol { padding-left: 1.1em; }
 .prose li { margin-bottom: 0.3em; }
-.prose li::marker { color: var(--red); }
+.prose li::marker { color: var(--accent); }
 .prose strong { color: var(--ink); font-weight: 600; }
-.prose blockquote { margin: 1.5em 0; padding-left: 1em; border-left: 2px solid var(--red); color: var(--ink); }
+.prose blockquote { margin: 1.5em 0; padding-left: 1em; border-left: 2px solid var(--accent); color: var(--ink); }
 .prose code { font-family: var(--mono); font-size: 0.85em; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

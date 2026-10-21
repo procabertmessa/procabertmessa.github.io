@@ -40,7 +40,7 @@ const facts = [
 
 <Base title={d.title} description={d.summary} sheet={no} sheetTitle={d.title}>
   <section class="pad head">
-    <p class="mono caps muted"><a href={`${base}/projects/`}>P-00 Register</a> / <span class="red">{no}</span></p>
+    <p class="mono caps muted"><a href={`${base}/projects/`}>P-00 Register</a> / <span class="accent">{no}</span></p>
     <h1>{d.title}{d.draft && <span class="draft">Draft</span>}</h1>
     <p class="lede measure">{d.summary}</p>
     {d.url && (
@@ -78,7 +78,7 @@ const facts = [
           ) : (
             <div class="main empty"><span class="mono caps">Images to come</span></div>
           )}
-          <p class="cap mono"><span class="red" data-fig-no>Fig. 01</span> <span data-fig-cap>{gallery[0]?.caption}</span></p>
+          <p class="cap mono"><span class="accent" data-fig-no>Fig. 01</span> <span data-fig-cap>{gallery[0]?.caption}</span></p>
           {gallery.length > 1 && (
             <div class="thumbs">
               {gallery.map((g, i) => (
@@ -102,7 +102,7 @@ const facts = [
             <button type="button" data-lightbox={g.i} aria-label={`View figure ${g.i + 1} full screen`}>
               <Image src={g.src} alt={g.caption ?? d.title} widths={[700, 1200]} sizes="(max-width: 860px) 100vw, 50vw" />
             </button>
-            <figcaption class="mono"><span class="red">Fig. {String(g.i + 1).padStart(2, '0')}</span> {g.caption}</figcaption>
+            <figcaption class="mono"><span class="accent">Fig. {String(g.i + 1).padStart(2, '0')}</span> {g.caption}</figcaption>
           </figure>
         ))}
         {plates.length === 0 && Array.from({ length: placeholders }, (_, i) => (
@@ -182,7 +182,7 @@ const facts = [
   .plates button { display: block; width: 100%; padding: 0; border: 1px solid var(--line); background: none; cursor: zoom-in; }
   .plates button :global(img) { display: block; width: 100%; height: auto; }
   .plates-hero figure:last-child:nth-child(odd) { grid-column: 1 / -1; border-left: 0; }
-  .plates button:hover { outline: 1px solid var(--red); }
+  .plates button:hover { outline: 1px solid var(--accent); }
   .plates figcaption { margin-top: 10px; font-size: 12px; color: var(--body); }
   .plates-sheet figure:first-child { grid-column: 1 / -1; }
   .plates-sheet figure:nth-child(2n + 1) { border-left: 1px solid var(--line); }
