@@ -81,13 +81,13 @@ a.reg-row:hover .no, a.reg-row:hover .meta, a.reg-row:hover .sub { color: var(--
 .draft { margin-left: 8px; font-family: var(--mono); font-size: 9.5px; padding: 1px 5px; border: 1px dashed currentColor; text-transform: uppercase; vertical-align: 2px; }
 
 /* Long-form text */
-.prose { color: var(--body); font-size: 17px; line-height: 1.65; }
+.prose { color: var(--body); font-size: 15px; line-height: 1.6; }
 .prose h2 { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin: 2.4em 0 0.8em; color: var(--ink); }
 .prose > h2:first-child { margin-top: 0; }
 .prose h2::before { content: '— '; color: var(--red); }
 .prose h3 { font-size: 1.1rem; margin: 1.8em 0 0.5em; }
 .prose ul, .prose ol { padding-left: 1.1em; }
-.prose li { margin-bottom: 0.45em; }
+.prose li { margin-bottom: 0.3em; }
 .prose li::marker { color: var(--red); }
 .prose strong { color: var(--ink); font-weight: 600; }
 .prose blockquote { margin: 1.5em 0; padding-left: 1em; border-left: 2px solid var(--red); color: var(--ink); }
