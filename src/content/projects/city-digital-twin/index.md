@@ -8,6 +8,7 @@ context: Aretian
 role: Urban planner & GIS analyst
 skills:
   - Cross-team coordination
+  - Public-sector stakeholders
   - Client requirements to product
   - Territorial-scale GIS
   - Large cadastral datasets
@@ -16,6 +17,13 @@ skills:
 draft: true
 location: Catalonia, Spain
 url: https://cdt.cat
+stack:
+  - Python (pandas, GeoPandas, Shapely)
+  - QGIS
+  - PostGIS
+  - GDAL/OGR
+  - Cadastral data (INSPIRE / GML)
+  - OGC WFS/WMS
 tags:
   - Digital twins
   - Geospatial
@@ -55,8 +63,12 @@ Each parcel carries its own area and land qualification, while rent, price and s
 
 ## What I did
 
-- Coordinated the link between clients, the data team and the developers, turning client needs into CDT content and features.
+- Coordinated the developers, product design and data teams, turning client needs into CDT content and features.
 - Guided the development team on how data should be structured, served and used in the platform, always from the end user's point of view.
 - Led the design of the data structure behind the twin, for both the urban and the mobility datasets.
 - Built and led the parcel-level dataset for the whole of Catalonia, cross-referenced with the Catalan Government's urban planning classification layers.
 - Set the data cleaning and validation process so every indicator rests on consistent data.
+
+## Impact
+
+The twin supports public-sector stakeholders across Catalonia, including the Barcelona Metropolitan Area (AMB), INCASÒL and the Generalitat de Catalunya, giving them a shared, parcel-level view of the territory to inform planning and housing decisions.
