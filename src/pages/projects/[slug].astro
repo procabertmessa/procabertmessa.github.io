@@ -36,6 +36,9 @@ const facts = [
     <p class="mono caps muted"><a href={`${base}/projects/`}>P-00 Register</a> / <span class="red">{no}</span></p>
     <h1>{d.title}{d.draft && <span class="draft">Draft</span>}</h1>
     <p class="lede measure">{d.summary}</p>
+    {d.url && (
+      <a class="visit mono caps" href={d.url} rel="noopener" target="_blank">Visit {d.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</a>
+    )}
   </section>
 
   <dl class="facts">
@@ -78,6 +81,8 @@ const facts = [
   .head h1 { font-size: clamp(40px, 6vw, 84px); letter-spacing: -0.04em; margin: 10px 0 20px; }
   .head .lede { font-size: 20px; line-height: 1.45; color: var(--ink); margin: 0; }
   .head a { text-decoration: none; }
+  .visit { display: inline-block; margin-top: 24px; padding: 12px 18px; border: 1px solid var(--line); color: var(--ink); font-size: 12px; }
+  .visit:hover { background: var(--hover-bg); color: var(--hover-fg); }
 
   .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); border-top: 1px solid var(--line); }
   .facts div { padding: 10px 18px; border-left: 1px solid var(--line); }
