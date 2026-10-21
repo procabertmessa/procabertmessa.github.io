@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
-import Coverflow from '../../components/Coverflow.astro';
+import { Image } from 'astro:assets';
+import Lightbox from '../../components/Lightbox.astro';
 import Base from '../../layouts/Base.astro';
 import { getProjects, sheetNumber } from '../../lib/projects';
 import { categoryLabel } from '../../data/categories';
@@ -21,7 +22,11 @@ const no = sheetNumber(all, project.id);
 // The cover leads the gallery; drafts without images show empty frames so the layout reads.
 const gallery = [...(d.cover ? [{ src: d.cover, caption: d.title }] : []), ...d.images];
 const placeholders = gallery.length === 0 && d.draft ? 3 : 0;
-const hasSide = gallery.length > 0 || placeholders > 0;
+const mode = d.gallery;
+const hasSide = mode === 'side' && (gallery.length > 0 || placeholders > 0);
+// In hero mode the cover runs across the page, so the plates grid starts with the next image.
+const plates = gallery.map((g, i) => ({ ...g, i })).slice(mode === 'hero' && d.cover ? 1 : 0);
+const showPlates = mode !== 'side' && (plates.length > 0 || placeholders > 0);
 // Legend band under the text: what the project shows Pablo can do, and the tools used.
 const legends = ([['Skills', d.skills ?? []], ['Tools', d.stack ?? []]] as [string, string[]][]).filter(([, items]) => items.length > 0);
 const facts = [
@@ -43,6 +48,13 @@ const facts = [
     )}
   </section>
 
+  {mode === 'hero' && d.cover && (
+    <button type="button" class="hero" data-lightbox="0" aria-label="View images full screen">
+      <Image src={d.cover} alt={d.title} widths={[800, 1400, 2200]} sizes="100vw" loading="eager" />
+      <span class="hint mono caps">Fig. 01 · View full screen ⤢</span>
+    </button>
+  )}
+
   <dl class="facts">
     {facts.map(([k, v]) => (
       <div><dt>{k}</dt><dd>{v}</dd></div>
@@ -57,10 +69,51 @@ const facts = [
     {hasSide && (
       <aside class="side">
         <div class="band-head"><span>Plates</span><span>{gallery.length || 'Pending'}</span></div>
-        <div class="flow"><Coverflow title={d.title} images={gallery} placeholders={placeholders} /></div>
+        <div class="viewer">
+          {gallery.length > 0 ? (
+            <button type="button" class="main" data-lightbox="0" data-main aria-label="View full screen">
+              {gallery.map((g, i) => (
+                <Image src={g.src} alt={g.caption ?? d.title} widths={[700, 1200]} sizes="(max-width: 860px) 100vw, 50vw" class:list={[{ on: i === 0 }]} data-fig={i} />
+              ))}
+            </button>
+          ) : (
+            <div class="main empty"><span class="mono caps">Images to come</span></div>
+          )}
+          <p class="cap mono"><span class="red" data-fig-no>Fig. 01</span> <span data-fig-cap>{gallery[0]?.caption}</span></p>
+          {gallery.length > 1 && (
+            <div class="thumbs">
+              {gallery.map((g, i) => (
+                <button type="button" class:list={['thumb', { on: i === 0 }]} data-thumb={i} data-caption={g.caption ?? ''} aria-label={`Figure ${i + 1}`}>
+                  <Image src={g.src} alt="" widths={[200]} sizes="120px" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </aside>
     )}
   </section>
+
+  {showPlates && (
+    <section class="band plates-band">
+      <div class="band-head"><span>Plates</span><span>{gallery.length || 'Pending'}</span></div>
+      <div class:list={['plates', `plates-${mode}`]}>
+        {plates.map((g) => (
+          <figure>
+            <button type="button" data-lightbox={g.i} aria-label={`View figure ${g.i + 1} full screen`}>
+              <Image src={g.src} alt={g.caption ?? d.title} widths={[700, 1200]} sizes="(max-width: 860px) 100vw, 50vw" />
+            </button>
+            <figcaption class="mono"><span class="red">Fig. {String(g.i + 1).padStart(2, '0')}</span> {g.caption}</figcaption>
+          </figure>
+        ))}
+        {plates.length === 0 && Array.from({ length: placeholders }, (_, i) => (
+          <figure><div class="empty"><span class="mono caps">Fig. {String(i + 1).padStart(2, '0')}</span></div></figure>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {gallery.length > 0 && <Lightbox title={d.title} images={gallery} />}
 
   {legends.length > 0 && (
     <section class="band legends">
@@ -79,6 +132,21 @@ const facts = [
   </nav>
 </Base>
 
+<script>
+  // Side viewer: a thumbnail swaps the large image; the large image opens the full-screen viewer there.
+  const main = document.querySelector<HTMLElement>('[data-main]');
+  document.querySelectorAll<HTMLElement>('[data-thumb]').forEach((t) =>
+    t.addEventListener('click', () => {
+      const i = t.dataset.thumb!;
+      main!.dataset.lightbox = i;
+      main!.querySelectorAll<HTMLElement>('[data-fig]').forEach((im) => im.classList.toggle('on', im.dataset.fig === i));
+      document.querySelectorAll<HTMLElement>('[data-thumb]').forEach((o) => o.classList.toggle('on', o === t));
+      document.querySelector('[data-fig-no]')!.textContent = `Fig. ${String(Number(i) + 1).padStart(2, '0')}`;
+      document.querySelector('[data-fig-cap]')!.textContent = t.dataset.caption ?? '';
+    }),
+  );
+</script>
+
 <style>
   .head h1 { font-size: clamp(40px, 6vw, 84px); letter-spacing: -0.04em; margin: 10px 0 20px; }
   .head .lede { font-size: 20px; line-height: 1.45; color: var(--ink); margin: 0; }
@@ -95,7 +163,32 @@ const facts = [
   .body { display: grid; grid-template-columns: 1fr 280px; }
   .body.has-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } /* divider lines up with the facts and pager */
   .side { border-left: 1px solid var(--line); display: flex; flex-direction: column; }
-  .has-side .side .flow { position: sticky; top: 0; height: min(78vh, 720px); }
+  .viewer { position: sticky; top: 0; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .viewer .main { position: relative; display: grid; padding: 0; border: 1px solid var(--line); background: none; cursor: zoom-in; aspect-ratio: 16 / 10; }
+  .viewer .main :global(img) { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.25s; }
+  .viewer .main :global(img.on) { opacity: 1; }
+  .viewer .cap { margin: 0; font-size: 12px; color: var(--body); }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+  .thumb { padding: 0; border: 1px solid var(--line); background: none; aspect-ratio: 4 / 3; cursor: pointer; opacity: 0.45; }
+  .thumb.on, .thumb:hover { opacity: 1; outline: 1px solid var(--red); }
+  .thumb :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .hero { display: block; position: relative; width: 100%; padding: 0; border: 0; border-top: 1px solid var(--line); background: none; cursor: zoom-in; }
+  .hero :global(img) { display: block; width: 100%; height: min(72vh, 760px); object-fit: cover; }
+  .hint { position: absolute; left: 18px; bottom: 14px; padding: 6px 10px; background: rgba(5, 5, 5, 0.75); color: #ece8df; font-size: 11px; }
+
+  .plates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .plates figure { margin: 0; padding: 24px; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .plates figure:nth-child(2n + 1) { border-left: 0; }
+  .plates button { display: block; width: 100%; padding: 0; border: 1px solid var(--line); background: none; cursor: zoom-in; }
+  .plates button :global(img) { display: block; width: 100%; height: auto; }
+  .plates-hero figure:last-child:nth-child(odd) { grid-column: 1 / -1; border-left: 0; }
+  .plates button:hover { outline: 1px solid var(--red); }
+  .plates figcaption { margin-top: 10px; font-size: 12px; color: var(--body); }
+  .plates-sheet figure:first-child { grid-column: 1 / -1; }
+  .plates-sheet figure:nth-child(2n + 1) { border-left: 1px solid var(--line); }
+  .plates-sheet figure:nth-child(2n) { border-left: 0; }
+  .empty { display: grid; place-items: center; aspect-ratio: 4 / 3; border: 1px dashed var(--muted); color: var(--muted); }
   .legends { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
   .legends > div + div { border-left: 1px solid var(--line); }
   .tools { list-style: none; margin: 0; padding: 14px 18px; display: grid; gap: 6px; color: var(--ink); }
@@ -110,7 +203,10 @@ const facts = [
   @media (max-width: 860px) {
     .body, .body.has-side { grid-template-columns: 1fr; }
     .side { border-left: 0; border-top: 1px solid var(--line); order: -1; }
-    .has-side .side .flow { position: static; height: 54vh; }
+    .viewer { position: static; }
+    .plates { grid-template-columns: 1fr; }
+    .plates figure, .plates-sheet figure:nth-child(n) { border-left: 0; }
+    .hero :global(img) { height: 46vh; }
     .facts div { border-top: 0.5px solid var(--faint); }
   }
   @media (max-width: 520px) {

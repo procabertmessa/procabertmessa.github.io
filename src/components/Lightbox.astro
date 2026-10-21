@@ -1,0 +1,89 @@
+---
+// Full-screen image viewer. Any element with data-lightbox="<index>" on the page opens it at that image.
+// Arrows, keyboard (← → Esc) and swipe move through the images; the caption and count sit underneath.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title: string;
+  images: { src: ImageMetadata; caption?: string }[];
+}
+const { title, images } = Astro.props;
+const full = await Promise.all(
+  images.map(async (img) => ({
+    src: (await getImage({ src: img.src, width: Math.min(img.src.width, 2400) })).src,
+    caption: img.caption ?? '',
+  })),
+);
+---
+
+<dialog class="lightbox" data-lightbox-root data-images={JSON.stringify(full)} aria-label={`${title}: images`}>
+  <div class="bar mono">
+    <span><span class="red" data-lb-index>Fig. 01</span> / {String(full.length).padStart(2, '0')}</span>
+    <span class="cap" data-lb-caption></span>
+    <form method="dialog"><button class="close" aria-label="Close">Close ✕</button></form>
+  </div>
+  <div class="view">
+    <button type="button" class="nav prev" data-lb-prev aria-label="Previous image">←</button>
+    <img alt="" data-lb-img />
+    <button type="button" class="nav next" data-lb-next aria-label="Next image">→</button>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-root]');
+  if (dialog) {
+    const images: { src: string; caption: string }[] = JSON.parse(dialog.dataset.images ?? '[]');
+    const img = dialog.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const index = dialog.querySelector<HTMLElement>('[data-lb-index]')!;
+    const caption = dialog.querySelector<HTMLElement>('[data-lb-caption]')!;
+    let current = 0;
+    const show = (i: number) => {
+      current = (i + images.length) % images.length;
+      img.src = images[current].src;
+      img.alt = images[current].caption;
+      index.textContent = `Fig. ${String(current + 1).padStart(2, '0')}`;
+      caption.textContent = images[current].caption;
+    };
+    document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach((el) =>
+      el.addEventListener('click', () => { show(Number(el.dataset.lightbox)); dialog.showModal(); }),
+    );
+    dialog.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(current - 1));
+    dialog.querySelector('[data-lb-next]')!.addEventListener('click', () => show(current + 1));
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+    img.addEventListener('click', () => dialog.close());
+    let x0 = 0;
+    dialog.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    dialog.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>
+
+<style>
+  .lightbox {
+    width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+    background: #050505; color: #ece8df;
+  }
+  .lightbox[open] { display: flex; flex-direction: column; }
+  .lightbox::backdrop { background: #050505; }
+  .bar {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center;
+    padding: 12px 18px; border-bottom: 1px solid #2a2a2a; font-size: 12px;
+  }
+  .cap { color: #b9b5ad; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .close { font: inherit; background: none; border: 1px solid #2a2a2a; color: inherit; padding: 6px 12px; cursor: pointer; }
+  .close:hover { background: #ece8df; color: #050505; }
+  .view { flex: 1; min-height: 0; display: grid; grid-template-columns: 64px 1fr 64px; align-items: center; }
+  .view img { max-width: 100%; max-height: calc(100dvh - 90px); margin: auto; object-fit: contain; cursor: zoom-out; }
+  .nav { height: 100%; background: none; border: 0; color: #ece8df; font-size: 22px; cursor: pointer; opacity: 0.6; }
+  .nav:hover { opacity: 1; }
+  @media (max-width: 600px) {
+    .view { grid-template-columns: 1fr; }
+    .nav { display: none; }
+  }
+</style>
