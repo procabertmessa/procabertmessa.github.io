@@ -5,7 +5,7 @@ summary: An interactive model of Catalonia that computes housing, urban form,
   can be read and compared at the scale a decision needs.
 category: urban-analytics
 context: Aretian
-role: Urban data lead
+role: Urban planner & GIS analyst
 draft: true
 location: Catalonia, Spain
 url: https://cdt.cat
