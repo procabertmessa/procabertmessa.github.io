@@ -9,6 +9,8 @@
   --muted: #6f706c;
   --red: #ff5b3f;
   --dot: rgba(242, 241, 238, 0.07);
+  --blocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(242,241,238,0.09)' stroke-width='1'/%3E%3C/svg%3E");
+  --blocks-rot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='2400'%3E%3Cdefs%3E%3Cpattern id='b' width='160' height='160' patternUnits='userSpaceOnUse' patternTransform='rotate(-45)'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(242,241,238,0.09)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%' height='100%' fill='url(%23b)'/%3E%3C/svg%3E");
   --hover-bg: transparent;
   --hover-fg: var(--ink);
   --wrap: 1240px;
@@ -27,6 +29,8 @@
   --muted: #8d8c87;
   --red: #d2462d;
   --dot: rgba(17, 17, 17, 0.08);
+  --blocks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(17,17,17,0.10)' stroke-width='1'/%3E%3C/svg%3E");
+  --blocks-rot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='2400'%3E%3Cdefs%3E%3Cpattern id='b' width='160' height='160' patternUnits='userSpaceOnUse' patternTransform='rotate(-45)'%3E%3Cpath d='M30.0 12.0 L130.0 12.0 L148.0 30.0 L148.0 130.0 L130.0 148.0 L30.0 148.0 L12.0 130.0 L12.0 30.0 Z' fill='none' stroke='rgba(17,17,17,0.10)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%' height='100%' fill='url(%23b)'/%3E%3C/svg%3E");
   --hover-bg: transparent;
   --hover-fg: var(--ink);
   color-scheme: light;
@@ -36,7 +40,8 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  background: var(--paper) radial-gradient(var(--dot) 1px, transparent 1.2px) 0 0 / 28px 28px;
+  /* Eixample blocks (Cerdà: 113 m blocks, 20 m streets, chamfered corners), outlines only. */
+  background: var(--paper) var(--blocks) center top / 160px 160px;
   color: var(--body);
   font-family: var(--sans);
   font-size: 16px;
@@ -109,3 +114,6 @@ a.reg-row:hover .title { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* Mock-up variant: blocks turned 45° like the real Eixample grid. Add ?rot to the URL. */
+html.rot body { background: var(--paper) var(--blocks-rot) center top / 2400px 2400px; }
