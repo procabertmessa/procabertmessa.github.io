@@ -1,6 +1,5 @@
 ---
-// Animated parcel map drawn on a canvas: the Eixample where Passeig de Sant Joan meets Avinguda Diagonal
-// at Plaça Verdaguer. Cerdà proportions (113 m blocks, 20 m streets, 15 m chamfers, 50 m avenues); the
+// Animated parcel map drawn on a canvas: the Eixample where Passeig de Sant Joan meets Avinguda Diagonal. Cerdà proportions (113 m blocks, 20 m streets, 15 m chamfers, 50 m avenues); the
 // Diagonal cuts the blocks it crosses. Each block is lined with plots around an open courtyard, and a slow
 // wave lights up some plots, like an analysis running across the city. The plots are generated, not real data.
 ---
@@ -15,7 +14,7 @@
     type B = { x: number; y: number; plots: P[] };
     let blocks: B[] = [];
     let W = 0, H = 0, X0 = 0, Y0 = 0;
-    let colors = { line: '', fill: '', hot: '', label: '' };
+    let colors = { line: '', fill: '', label: '', greens: [] as string[] };
     let seed = 11;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     const PITCH = 150, SIDE = (PITCH * 113.3) / 133.3, CHAMFER = (PITCH * 15) / 133.3, ANGLE = -0.12;
@@ -23,7 +22,6 @@
     const M = PITCH / 133.3; // pixels per metre
     const AVENUE = 50 * M, STREET = 20 * M;
     const DIAG = Math.atan(0.5); // the Diagonal runs down towards Glòries
-    const PLAZA = 34 * M;
 
     // Cuts a strip into plots of uneven frontage.
     function strip(x: number, y: number, w: number, h: number, along: 'x' | 'y', out: P[]) {
@@ -61,7 +59,8 @@
       colors = {
         line: dark ? 'rgba(236,232,223,0.2)' : 'rgba(22,22,22,0.32)',
         fill: dark ? 'rgba(236,232,223,0.06)' : 'rgba(22,22,22,0.07)',
-        hot: s.getPropertyValue('--accent').trim() || '#237049',
+        // Three emerald tones, so lit plots read as a field of greens rather than one flat colour.
+        greens: dark ? ['#1f7a55', '#2e9b6c', '#5cc596'] : ['#17603a', '#23855a', '#3fa67a'],
       };
     }
 
@@ -99,17 +98,16 @@
       ctx.lineTo(X0 - dx * L - nx * h, Y0 - dy * L - ny * h);
       ctx.closePath();
     }
-    function plaza() { ctx.moveTo(X0 + PLAZA, Y0); ctx.arc(X0, Y0, PLAZA, 0, Math.PI * 2); }
 
     function labels() {
       ctx.fillStyle = colors.label;
       ctx.font = '11px "IBM Plex Mono", monospace';
       ctx.save();
-      ctx.translate(X0 + 4, Y0 + PLAZA + PITCH * 1.6); ctx.rotate(-Math.PI / 2);
+      ctx.translate(X0 + 4, Y0 + PITCH * 1.8); ctx.rotate(-Math.PI / 2);
       ctx.fillText('PG. DE SANT JOAN', 0, 0);
       ctx.restore();
       ctx.save();
-      ctx.translate(X0 + dx * (PLAZA + PITCH * 0.9), Y0 + dy * (PLAZA + PITCH * 0.9) + 3); ctx.rotate(DIAG);
+      ctx.translate(X0 + dx * PITCH * 1.2, Y0 + dy * PITCH * 1.2 + 3); ctx.rotate(DIAG);
       ctx.fillText('AV. DIAGONAL', 0, 0);
       ctx.restore();
     }
@@ -122,9 +120,8 @@
       ctx.lineWidth = 0.5;
       ctx.strokeStyle = colors.line;
       ctx.save();
-      // The Diagonal and Plaça Verdaguer are carved out of the grid.
+      // The Diagonal is carved out of the grid.
       outside(diagonal);
-      outside(plaza);
       for (const b of blocks) {
         ctx.save();
         octagon(b.x, b.y);
@@ -137,7 +134,7 @@
           ctx.rect(x, y, p.w, p.h);
           if (lit) {
             ctx.globalAlpha = Math.max(0, 0.9 - d * 4);
-            ctx.fillStyle = colors.hot; ctx.fill();
+            ctx.fillStyle = colors.greens[Math.floor(((p.v - 0.86) / 0.14) * 3) % 3]; ctx.fill();
             ctx.globalAlpha = 1;
           } else if (p.v > 0.95) {
             ctx.fillStyle = colors.fill; ctx.fill();
@@ -149,7 +146,7 @@
         ctx.lineWidth = 0.9; ctx.stroke(); ctx.lineWidth = 0.5;
       }
       ctx.restore();
-      // Edges of the Diagonal and the square, drawn only where they cut a block.
+      // Edges of the Diagonal, drawn only where they cut a block.
       ctx.save();
       ctx.beginPath();
       for (const b of blocks) {
@@ -158,12 +155,7 @@
         ctx.lineTo(x + s - c, y + s); ctx.lineTo(x + c, y + s); ctx.lineTo(x, y + s - c); ctx.lineTo(x, y + c); ctx.closePath();
       }
       ctx.clip();
-      outside(plaza);
       ctx.beginPath(); diagonal(); ctx.lineWidth = 0.9; ctx.stroke();
-      ctx.restore();
-      ctx.save();
-      outside(diagonal);
-      ctx.beginPath(); plaza(); ctx.lineWidth = 0.9; ctx.stroke();
       ctx.restore();
       labels();
       ctx.restore();
