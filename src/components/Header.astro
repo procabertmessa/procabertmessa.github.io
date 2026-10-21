@@ -12,8 +12,8 @@ const path = Astro.url.pathname.replace(base, '') || '/';
 
 <header class="bar">
   <a class="brand" href={`${base}/`}>
-    <span class="name">{person.shortName}</span>
-    <span class="tag mono muted">Urban data · Urban design · Architecture</span>
+    <span class="name">{person.name}</span>
+    <span class="tag mono muted">Architect &amp; Urban Design Manager</span>
   </a>
   <nav aria-label="Main">
     {links.map((l) => (
