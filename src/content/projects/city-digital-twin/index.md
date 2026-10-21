@@ -5,6 +5,7 @@ summary: An interactive model of Catalonia that computes housing, urban form,
   can be read and compared at the scale a decision needs.
 category: urban-analytics
 context: Aretian
+role: Urban data lead
 draft: true
 location: Catalonia, Spain
 url: https://cdt.cat
@@ -47,4 +48,8 @@ Each parcel carries its own area and land qualification, while rent, price and s
 
 ## What I did
 
-To be written: your role and contribution.
+- Designed the urban data structure behind the twin.
+- Built the parcel-level dataset for the whole of Catalonia and cross-referenced it with the Catalan Government's urban planning classification layers.
+- Cleaned and validated the source datasets so every indicator rests on consistent data.
+- Worked with the developers on how the data is served and used in the platform, shaping it from a user's point of view.
+- Gathered what clients needed and translated it into CDT content and features.
