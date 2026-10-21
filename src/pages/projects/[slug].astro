@@ -22,6 +22,8 @@ const no = sheetNumber(all, project.id);
 const gallery = [...(d.cover ? [{ src: d.cover, caption: d.title }] : []), ...d.images];
 const placeholders = gallery.length === 0 && d.draft ? 3 : 0;
 const hasSide = gallery.length > 0 || placeholders > 0;
+// Legend band under the text: what the project shows Pablo can do, and the tools used.
+const legends = ([['Skills', d.skills ?? []], ['Tools', d.stack ?? []]] as [string, string[]][]).filter(([, items]) => items.length > 0);
 const facts = [
   ['Type', categoryLabel(d.category)],
   ['With', d.context],
@@ -52,24 +54,24 @@ const facts = [
 
   <section class:list={['band body', { 'has-side': hasSide }]}>
     <div class="pad prose measure"><Content /></div>
-    {hasSide ? (
+    {hasSide && (
       <aside class="side">
         <div class="band-head"><span>Plates</span><span>{gallery.length || 'Pending'}</span></div>
         <div class="flow"><Coverflow title={d.title} images={gallery} placeholders={placeholders} /></div>
-        {d.stack.length > 0 && (
-          <>
-            <div class="band-head top"><span>Legend · Tools</span></div>
-            <ul class="tools mono">{d.stack.map((s) => <li>{s}</li>)}</ul>
-          </>
-        )}
-      </aside>
-    ) : d.stack.length > 0 && (
-      <aside class="side">
-        <div class="band-head"><span>Legend · Tools</span></div>
-        <ul class="tools mono">{d.stack.map((s) => <li>{s}</li>)}</ul>
       </aside>
     )}
   </section>
+
+  {legends.length > 0 && (
+    <section class="band legends">
+      {legends.map(([label, items]) => (
+        <div>
+          <div class="band-head"><span>Legend · {label}</span></div>
+          <ul class="tools mono">{items.map((s) => <li>{s}</li>)}</ul>
+        </div>
+      ))}
+    </section>
+  )}
 
   <nav class="band pager" aria-label="More projects">
     <a href={`${base}/projects/${prev.id}/`}><span class="mono muted">← {sheetNumber(all, prev.id)}</span>{prev.data.title}</a>
@@ -94,7 +96,8 @@ const facts = [
   .body.has-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } /* divider lines up with the facts and pager */
   .side { border-left: 1px solid var(--line); display: flex; flex-direction: column; }
   .has-side .side .flow { position: sticky; top: 0; height: min(78vh, 720px); }
-  .top { border-top: 1px solid var(--line); }
+  .legends { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .legends > div + div { border-left: 1px solid var(--line); }
   .tools { list-style: none; margin: 0; padding: 14px 18px; display: grid; gap: 6px; color: var(--ink); }
   .tools li::before { content: '■ '; color: var(--red); }
 

@@ -17,6 +17,7 @@ const projects = defineCollection({
       role: z.string().optional(),
       url: z.string().url().optional(), // live project website, if any
       stack: z.array(z.string()).default([]),
+      skills: z.array(z.string()).default([]),
       tags: z.array(z.string()).default([]),
       draft: z.boolean().default(false), // true = hidden on the live site, visible in `npm run dev`
       cover: image().optional(), // e.g. ./01-cover.jpg (file in the same folder)

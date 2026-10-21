@@ -6,6 +6,13 @@ summary: An interactive model of Catalonia that computes housing, urban form,
 category: urban-analytics
 context: Aretian
 role: Urban planner & GIS analyst
+skills:
+  - Cross-team coordination
+  - Client requirements to product
+  - Territorial-scale GIS
+  - Large cadastral datasets
+  - Mobility data
+  - Data quality & validation
 draft: true
 location: Catalonia, Spain
 url: https://cdt.cat
@@ -50,6 +57,6 @@ Each parcel carries its own area and land qualification, while rent, price and s
 
 - Coordinated the link between clients, the data team and the developers, turning client needs into CDT content and features.
 - Guided the development team on how data should be structured, served and used in the platform, always from the end user's point of view.
-- Led the design of the urban data structure behind the twin.
+- Led the design of the data structure behind the twin, for both the urban and the mobility datasets.
 - Built and led the parcel-level dataset for the whole of Catalonia, cross-referenced with the Catalan Government's urban planning classification layers.
 - Set the data cleaning and validation process so every indicator rests on consistent data.
