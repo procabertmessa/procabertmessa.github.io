@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { projectOrder, featuredProjects } from '../data/projects';
+import { projectOrder } from '../data/projects';
 
 export type Project = CollectionEntry<'projects'>;
 
@@ -17,11 +17,8 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getFeaturedProjects(): Promise<Project[]> {
-  const all = await getProjects();
-  return featuredProjects
-    .map((id) => all.find((p) => p.id === id))
-    .filter((p): p is Project => Boolean(p))
-    .slice(0, 4);
+  // Same order as the Projects page, so the home selection never disagrees with it.
+  return (await getProjects()).slice(0, 4);
 }
 
 /** Sheet number for a project, from its position in the published order: P-01, P-02 ... */
