@@ -47,10 +47,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <a class="sr-only" href="#main">Skip to content</a>
     <div class="sheet">
-      <div class="refs" aria-hidden="true">
-        {'ABCDEFGH'.split('').map((l, i) => <span class="col" style={`left:${((i + 0.5) / 8) * 100}%`}>{l}</span>)}
-        {[1, 2, 3, 4, 5, 6].map((n, i) => <span class="row" style={`top:${((i + 0.5) / 6) * 100}%`}>{n}</span>)}
-      </div>
       <Header />
       <main id="main">
         <slot />
@@ -61,21 +57,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 </html>
 
 <style>
-  .sheet {
-    position: relative;
-    margin: var(--frame);
-    min-height: calc(100vh - 2 * var(--frame));
-    border: 1.5px solid var(--line);
-    display: flex; flex-direction: column;
-  }
-  /* Inner hairline of the drawing frame */
-  .sheet::before { content: ''; position: absolute; inset: 5px; border: 0.5px solid var(--line); pointer-events: none; z-index: 2; }
-  main { flex: 1; margin: 0 5px; position: relative; }
-  .refs { position: absolute; inset: 0; pointer-events: none; font-family: var(--mono); font-size: 9px; color: var(--muted); }
-  .refs span { position: absolute; }
-  .refs .col { top: -14px; transform: translateX(-50%); }
-  .refs .row { left: -12px; transform: translateY(-50%); }
-  @media (max-width: 640px) {
-    .refs { display: none; }
-  }
+  .sheet { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; min-height: 100vh; display: flex; flex-direction: column; }
+  main { flex: 1; position: relative; }
+  @media (max-width: 640px) { .sheet { padding: 0 8px; } }
 </style>

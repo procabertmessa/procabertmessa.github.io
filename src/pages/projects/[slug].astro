@@ -118,7 +118,7 @@ const facts = [
     <section class="band legends">
       {legends.map(([label, items]) => (
         <div>
-          <div class="band-head"><span>Legend · {label}</span></div>
+          <div class="band-head"><span>{label}</span></div>
           <ul class="tools mono">{items.map((s) => <li>{s}</li>)}</ul>
         </div>
       ))}
@@ -147,21 +147,21 @@ const facts = [
 </script>
 
 <style>
-  .head h1 { font-size: clamp(40px, 6vw, 84px); letter-spacing: -0.04em; margin: 10px 0 20px; }
-  .head .lede { font-size: 20px; line-height: 1.45; color: var(--ink); margin: 0; }
+  .head h1 { font-size: clamp(40px, 5.6vw, 80px); letter-spacing: -0.045em; margin: 14px 0 24px; }
+  .head .lede { font-size: 20px; line-height: 1.5; color: var(--body); margin: 0; }
   .head a { text-decoration: none; }
-  .visit { display: inline-block; margin-top: 24px; padding: 12px 18px; border: 1px solid var(--line); color: var(--ink); font-size: 12px; }
-  .visit:hover { background: var(--hover-bg); color: var(--hover-fg); }
+  .visit { display: inline-block; margin-top: 28px; padding: 10px 16px; border: 1px solid var(--ink); border-radius: 999px; color: var(--ink); font-size: 11px; }
+  .visit:hover { background: var(--ink); color: var(--paper); }
 
-  .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); border-top: 1px solid var(--line); }
-  .facts div { padding: 10px 18px; border-left: 1px solid var(--line); }
+  .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .facts div { padding: 16px 18px; }
   .facts div:first-child { border-left: 0; }
   .facts dt { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
   .facts dd { margin: 2px 0 0; color: var(--ink); font-size: 14px; }
 
   .body { display: grid; grid-template-columns: 1fr 280px; }
   .body.has-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } /* divider lines up with the facts and pager */
-  .side { border-left: 1px solid var(--line); display: flex; flex-direction: column; }
+  .side { display: flex; flex-direction: column; }
   .viewer { position: sticky; top: 0; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
   .viewer .main { position: relative; display: grid; padding: 0; border: 0; background: none; cursor: zoom-in; align-items: start; }
   .viewer .main :global(img) { grid-area: 1 / 1; width: 100%; height: auto; opacity: 0; transition: opacity 0.25s; }
@@ -189,15 +189,16 @@ const facts = [
   .plates-sheet figure:nth-child(2n) { border-left: 0; }
   .empty { display: grid; place-items: center; aspect-ratio: 4 / 3; border: 1px dashed var(--muted); color: var(--muted); }
   .legends { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-  .legends > div + div { border-left: 1px solid var(--line); }
-  .tools { list-style: none; margin: 0; padding: 14px 18px; display: grid; gap: 6px; color: var(--ink); }
-  .tools li::before { content: '■ '; color: var(--red); }
+  
+  .tools { list-style: none; margin: 0; padding: 4px 18px 18px; display: flex; flex-wrap: wrap; gap: 8px; color: var(--ink); }
+  .tools li { padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; }
+  
 
-  .pager { display: grid; grid-template-columns: 1fr 1fr; }
+  .pager { display: grid; grid-template-columns: 1fr 1fr; margin-top: 48px; border-top: 1px solid var(--line); }
   .pager a { display: flex; flex-direction: column; gap: 4px; padding: 18px; text-decoration: none; color: var(--ink); font-size: 18px; letter-spacing: -0.01em; }
   .pager a:hover { background: var(--hover-bg); color: var(--hover-fg); }
   .pager a:hover span { color: var(--hover-fg); }
-  .pager .right { border-left: 1px solid var(--line); text-align: right; }
+  .pager .right { text-align: right; }
 
   @media (max-width: 860px) {
     .body, .body.has-side { grid-template-columns: 1fr; }
