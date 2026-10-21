@@ -22,7 +22,7 @@ const projects = defineCollection({
       draft: z.boolean().default(false), // true = hidden on the live site, visible in `npm run dev`
       cover: image().optional(), // e.g. ./01-cover.jpg (file in the same folder)
       // How the images sit on the page: hero (cover across the page + plates grid), side (viewer beside the text), sheet (plates grid under the text).
-      gallery: z.enum(['hero', 'side', 'sheet']).default('hero'),
+      gallery: z.enum(['hero', 'side', 'sheet']).default('side'),
       images: z.array(z.object({ src: image(), caption: z.string().optional() })).default([]),
     }),
 });
