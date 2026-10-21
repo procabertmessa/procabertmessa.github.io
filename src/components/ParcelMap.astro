@@ -14,7 +14,7 @@
     type B = { x: number; y: number; plots: P[] };
     let blocks: B[] = [];
     let W = 0, H = 0, X0 = 0, Y0 = 0;
-    let colors = { line: '', fill: '', label: '', greens: [] as string[] };
+    let colors = { line: '', fill: '', label: '', accent: '', dark: true };
     let seed = 11;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     const PITCH = 150, SIDE = (PITCH * 113.3) / 133.3, CHAMFER = (PITCH * 15) / 133.3, ANGLE = -0.12;
@@ -59,8 +59,8 @@
       colors = {
         line: dark ? 'rgba(236,232,223,0.2)' : 'rgba(22,22,22,0.32)',
         fill: dark ? 'rgba(236,232,223,0.06)' : 'rgba(22,22,22,0.07)',
-        // Three emerald tones, so lit plots read as a field of greens rather than one flat colour.
-        greens: dark ? ['#1f7a55', '#2e9b6c', '#5cc596'] : ['#17603a', '#23855a', '#3fa67a'],
+        accent: s.getPropertyValue('--accent').trim() || '#237049',
+        dark,
       };
     }
 
@@ -100,6 +100,7 @@
     }
 
     function labels() {
+      if (!colors.dark) return; // street names only on the dark version
       ctx.fillStyle = colors.label;
       ctx.font = '11px "IBM Plex Mono", monospace';
       ctx.save();
@@ -133,8 +134,10 @@
           ctx.beginPath();
           ctx.rect(x, y, p.w, p.h);
           if (lit) {
-            ctx.globalAlpha = Math.max(0, 0.9 - d * 4);
-            ctx.fillStyle = colors.greens[Math.floor(((p.v - 0.86) / 0.14) * 3) % 3]; ctx.fill();
+            // Three strengths of the accent, so lit plots read as a field of tones rather than one flat colour.
+            const tone = [0.55, 0.8, 1][Math.floor(((p.v - 0.86) / 0.14) * 3) % 3];
+            ctx.globalAlpha = Math.max(0, 0.9 - d * 4) * tone;
+            ctx.fillStyle = colors.accent; ctx.fill();
             ctx.globalAlpha = 1;
           } else if (p.v > 0.95) {
             ctx.fillStyle = colors.fill; ctx.fill();
