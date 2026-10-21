@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ParcelMap from '../components/ParcelMap.astro';
 import { getProjects, getFeaturedProjects, sheetNumber } from '../lib/projects';
@@ -8,10 +7,6 @@ import { person, experience } from '../data/cv';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const all = await getProjects();
 const featured = await getFeaturedProjects();
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 const short = { 'urban-analytics': 'Data', 'urban-design': 'Urban', architecture: 'Arch' } as const;
 const span = (j: (typeof experience)[number]) =>
   `${j.roles[j.roles.length - 1].dates.split('–')[0].trim()} – ${j.roles[0].dates.split('–')[1].trim()}`;
@@ -19,79 +14,55 @@ const span = (j: (typeof experience)[number]) =>
 
 <Base sheet="00" sheetTitle="Cover sheet">
   <section class="hero">
-    <div class="map-area">
-      <ParcelMap />
-      <div class="intro">
-        <h1><span>Designing</span><span>cities with</span><span>evidence.</span></h1>
-        <p class="mono lede">{person.intro} {person.location}.</p>
-      </div>
+    <ParcelMap />
+    <div class="intro">
+      <h1>Designing cities<br />with evidence.</h1>
+      <p class="lede">{person.intro} {person.location}.</p>
     </div>
-    <aside class="works">
-      <div class="band-head"><span>Schedule of works</span><span>Selected</span></div>
-      <ol class="register">
-        {featured.map((p) => (
-          <li>
-            <a class="reg-row" href={`${base}/projects/${p.id}/`}>
-              <span class="no">{sheetNumber(all, p.id)}</span>
-              <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
-              <span class="meta">{short[p.data.category]}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-      <a class="all mono" href={`${base}/projects/`}>→ Full register ({all.length} projects)</a>
-    </aside>
   </section>
 
   <section class="band">
-    <div class="band-head"><span>Revision history</span><span>Career</span></div>
+    <div class="band-head"><span>Selected work</span><a href={`${base}/projects/`}>All projects →</a></div>
     <ol class="register">
-      {experience.map((j, i) => (
+      {featured.map((p) => (
+        <li>
+          <a class="reg-row" href={`${base}/projects/${p.id}/`}>
+            <span class="no">{sheetNumber(all, p.id)}</span>
+            <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
+            <span class="meta">{short[p.data.category]}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span>Experience</span><a href={`${base}/about/`}>Full profile →</a></div>
+    <ol class="register">
+      {experience.map((j) => (
         <li>
           <div class="reg-row">
-            <span class="no">Rev. {String.fromCharCode(68 - i)}</span>
-            <span class="title">{j.roles[0].title} <span class="muted">· {j.org}</span></span>
+            <span class="no">{j.org}</span>
+            <span class="title">{j.roles[0].title}</span>
             <span class="meta">{span(j)}</span>
           </div>
         </li>
       ))}
     </ol>
-    <a class="all mono band-link" href={`${base}/about/`}>→ Full profile (A-01)</a>
   </section>
-
-  {posts.length > 0 && (
-    <section class="band">
-      <div class="band-head"><span>Notes</span><span>Blog</span></div>
-      <ol class="register">
-        {posts.map((p, i) => (
-          <li>
-            <a class="reg-row" href={`${base}/blog/${p.id}/`}>
-              <span class="no">B-{String(i + 1).padStart(2, '0')}</span>
-              <span class="title">{p.data.title}</span>
-              <span class="meta">{fmt(p.data.date)}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
-  )}
 </Base>
 
 <style>
-  .hero { display: grid; grid-template-columns: 1fr 380px; min-height: min(78vh, 760px); }
-  .map-area { position: relative; overflow: hidden; display: flex; align-items: flex-end; }
-  .intro { position: relative; padding: 56px 40px 44px; pointer-events: none; }
-  h1 { font-size: clamp(54px, 8.6vw, 132px); line-height: 0.88; letter-spacing: -0.045em; }
-  h1 span { display: block; }
-  .lede { font-size: 12px; line-height: 1.65; max-width: 460px; margin: 24px 0 0; color: var(--ink); background: var(--paper); padding: 6px 8px 6px 0; }
-  .works { border-left: 1px solid var(--line); display: flex; flex-direction: column; background: var(--paper); position: relative; }
-  .works .register { flex: 1; }
-  .all { display: block; padding: 14px 18px; border-top: 1px solid var(--line); text-decoration: underline; }
-  .band-link { border-top: 1px solid var(--line); }
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; }
-    .map-area { min-height: 460px; }
-    .intro { padding: 32px 16px 28px; }
-    .works { border-left: 0; border-top: 1px solid var(--line); }
+  .hero { position: relative; min-height: min(72vh, 680px); display: flex; align-items: flex-end; overflow: hidden; margin-bottom: 40px; }
+  .hero :global(.parcel-map) { mask-image: radial-gradient(ellipse at 70% 40%, #000 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 30%, transparent 75%); }
+  .intro { position: relative; padding: 0 18px 24px; pointer-events: none; }
+  h1 { font-size: clamp(48px, 7.4vw, 112px); line-height: 0.95; letter-spacing: -0.05em; }
+  .lede { font-size: 18px; line-height: 1.55; max-width: 520px; margin: 28px 0 0; color: var(--body); }
+  .band-head a { text-decoration: none; color: var(--muted); }
+  .band-head a:hover { color: var(--ink); }
+  .reg-row { grid-template-columns: 180px 1fr auto; }
+  @media (max-width: 640px) {
+    .reg-row { grid-template-columns: 1fr; }
+    .hero { min-height: 520px; }
   }
 </style>
