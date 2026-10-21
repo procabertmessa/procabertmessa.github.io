@@ -48,8 +48,8 @@ Each parcel carries its own area and land qualification, while rent, price and s
 
 ## What I did
 
-- Designed the urban data structure behind the twin.
-- Built the parcel-level dataset for the whole of Catalonia and cross-referenced it with the Catalan Government's urban planning classification layers.
-- Cleaned and validated the source datasets so every indicator rests on consistent data.
-- Worked with the developers on how the data is served and used in the platform, shaping it from a user's point of view.
-- Gathered what clients needed and translated it into CDT content and features.
+- Coordinated the link between clients, the data team and the developers, turning client needs into CDT content and features.
+- Guided the development team on how data should be structured, served and used in the platform, always from the end user's point of view.
+- Led the design of the urban data structure behind the twin.
+- Oversaw the parcel-level dataset for the whole of Catalonia, cross-referenced with the Catalan Government's urban planning classification layers.
+- Set the data cleaning and validation process so every indicator rests on consistent data.
