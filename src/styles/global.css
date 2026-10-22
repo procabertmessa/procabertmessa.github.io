@@ -95,7 +95,7 @@ a.reg-row:hover .title { color: var(--ink); }
 .prose strong { color: var(--ink); font-weight: 600; }
 .prose blockquote { margin: 1.5em 0; padding-left: 1em; border-left: 2px solid var(--accent); color: var(--ink); }
 .prose code { font-family: var(--mono); font-size: 0.85em; }
-.prose img { width: 100%; height: auto; margin: 2em 0 0.4em; border: 1px solid var(--line); }
+.prose img { width: 100%; height: auto; margin: 2em 0 0.4em; }
 .prose p:has(> img) { margin-bottom: 2em; }
 .prose p:has(> img) small { display: block; font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .prose table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 14px; font-variant-numeric: tabular-nums; }

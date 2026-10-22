@@ -1,7 +1,7 @@
 ---
 title: London, the extended city
 description: Testing the 15-minute city on both banks of the Thames. A summary of my final project for the Bachelor's degree in Architecture at ETSAB.
-date: 2026-10-22
+date: 2025-05-12
 tags: [15-minute city, Urban planning, Accessibility, London]
 ---
 
@@ -44,14 +44,14 @@ The method follows the walk from each home to the services around it, measured a
 | Pharmacy, 600 m | 80% | 65% |
 | Library or civic centre, 600 m | 59% | 53% |
 
-![Access to Underground stations within 600 m. Yellow buildings reach the most stations.](./london-15-minute-city/metro-600m.jpg)
+![Access to Underground stations within 600 m. Yellow buildings reach the most stations.](./london-15-minute-city/metro-600m.png)
 <small>Access to Underground stations within 600 m. Yellow buildings reach the most stations.</small>
 
 The hypothesis holds. The north bank does better on almost every count, and the gap is widest for the Underground and for pharmacies. Buses and supermarkets cover both banks almost completely, so they flatten the difference.
 
 Green space is the exception: the south bank is slightly better served. Its later growth seems to have kept more parks and open land.
 
-![Access to pharmacies within 600 m](./london-15-minute-city/pharmacies-600m.jpg)
+![Access to pharmacies within 600 m](./london-15-minute-city/pharmacies-600m.png)
 <small>Access to pharmacies within 600 m</small>
 
 ## Why density alone does not explain it
