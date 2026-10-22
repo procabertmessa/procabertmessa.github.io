@@ -1,7 +1,9 @@
 ---
 title: 'EU European Urban Initiative bid: municipal digital twin'
 summary: The digital-twin component of a consortium bid for EU urban-innovation funding, alongside SATEC and the Barcelona Supercomputing Center.
-category: urban-analytics
+disciplines:
+  - data
+  - urbanism
 context: Aretian
 location: Sant Joan Despí, Spain
 year: '2026'

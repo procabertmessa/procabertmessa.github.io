@@ -3,7 +3,9 @@ title: City Digital Twin — Catalunya
 summary: An interactive model of Catalonia that computes housing, urban form,
   economic, mobility and research indicators for every census section, so places
   can be read and compared at the scale a decision needs.
-category: urban-analytics
+disciplines:
+  - data
+  - urbanism
 context: Aretian
 role: Urban planner & GIS analyst
 skills:
@@ -30,8 +32,6 @@ tags:
   - Public sector
 cover: ./01-landing.jpg
 images:
-  - src: ./02-what-it-is.jpg
-    caption: What CDT is — five themes and the model in numbers
   - src: ./03-the-model.jpg
     caption: The model — five data layers stacked over a 500 × 500 m extract of the Eixample, Barcelona
   - src: ./04-housing-per-parcel.jpg

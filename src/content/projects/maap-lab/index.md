@@ -1,7 +1,8 @@
 ---
 title: MAAP Lab
 summary: To be written.
-category: urban-analytics
+disciplines:
+  - data
 context: MAAP Lab
 draft: true
 ---

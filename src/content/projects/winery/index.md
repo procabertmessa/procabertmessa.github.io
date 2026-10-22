@@ -1,7 +1,9 @@
 ---
 title: Alt Penedès winery
 summary: To be written.
-category: architecture
+disciplines:
+  - architecture
+  - landscape
 context: To confirm
 draft: true
 cover: ./01-b-00-vista-bodega-00-a3.jpg

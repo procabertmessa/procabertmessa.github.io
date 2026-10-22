@@ -10,7 +10,7 @@ const projects = defineCollection({
     z.object({
       title: z.string(),
       summary: z.string(),
-      category: z.enum(['urban-analytics', 'urban-design', 'architecture']),
+      disciplines: z.array(z.enum(['data', 'urbanism', 'architecture', 'landscape'])).min(1), // shown as tags, e.g. [data, urbanism]
       context: z.string(), // who it was for or with, e.g. "Aretian" or "UPC"
       location: z.string().optional(),
       year: z.string().optional(),

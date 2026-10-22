@@ -1,7 +1,8 @@
 ---
 title: Hedonic housing-price model
 summary: A regression model that explains what drives residential prices, built for the housing workstream of the Catalan digital twin.
-category: urban-analytics
+disciplines:
+  - data
 context: Aretian
 location: Catalonia, Spain
 tags: [Statistics, Housing, Digital twins]

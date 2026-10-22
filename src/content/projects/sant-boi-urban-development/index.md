@@ -1,7 +1,9 @@
 ---
 title: Sant Boi urban analysis
 summary: To be written.
-category: urban-analytics
+disciplines:
+  - data
+  - urbanism
 context: Aretian
 draft: true
 ---

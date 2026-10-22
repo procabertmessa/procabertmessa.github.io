@@ -1,8 +1,10 @@
-// Project categories, in the order they appear on the Projects page.
-export const categories = [
-  { id: 'urban-analytics', label: 'Urban analytics & digital twins' },
-  { id: 'urban-design', label: 'Urban design & planning' },
+// What each project is about. A project can have several; they show as tags and filter the Projects page.
+export const disciplines = [
+  { id: 'data', label: 'Data' },
+  { id: 'urbanism', label: 'Urbanism' },
   { id: 'architecture', label: 'Architecture' },
+  { id: 'landscape', label: 'Landscape' },
 ] as const;
 
-export const categoryLabel = (id: string) => categories.find((c) => c.id === id)?.label ?? id;
+export type Discipline = (typeof disciplines)[number]['id'];
+export const disciplineLabel = (id: string) => disciplines.find((d) => d.id === id)?.label ?? id;

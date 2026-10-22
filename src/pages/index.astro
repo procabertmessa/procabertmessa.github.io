@@ -3,11 +3,11 @@ import Base from '../layouts/Base.astro';
 import ParcelMap from '../components/ParcelMap.astro';
 import { getProjects, getFeaturedProjects, sheetNumber } from '../lib/projects';
 import { person, experience } from '../data/cv';
+import { disciplineLabel } from '../data/categories';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const all = await getProjects();
 const featured = await getFeaturedProjects();
-const short = { 'urban-analytics': 'Data', 'urban-design': 'Urban', architecture: 'Arch' } as const;
 const span = (j: (typeof experience)[number]) =>
   `${j.roles[j.roles.length - 1].dates.split('–')[0].trim()} – ${j.roles[0].dates.split('–')[1].trim()}`;
 ---
@@ -29,7 +29,7 @@ const span = (j: (typeof experience)[number]) =>
           <a class="reg-row" href={`${base}/projects/${p.id}/`}>
             <span class="no">{sheetNumber(all, p.id)}</span>
             <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
-            <span class="meta">{short[p.data.category]}</span>
+            <span class="meta">{p.data.disciplines.map(disciplineLabel).join(' · ')}</span>
           </a>
         </li>
       ))}

@@ -1,7 +1,8 @@
 ---
 title: Apartment Muntaner
 summary: To be written.
-category: architecture
+disciplines:
+  - architecture
 context: Work in progress
 draft: true
 ---

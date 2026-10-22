@@ -1,42 +1,69 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getProjects, sheetNumber } from '../../lib/projects';
-import { categories } from '../../data/categories';
+import { disciplines, disciplineLabel } from '../../data/categories';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const all = await getProjects();
-// Only show categories that have at least one project.
-const groups = categories
-  .map((c, i) => ({ ...c, series: (i + 1) * 100, items: all.filter((p) => p.data.category === c.id) }))
-  .filter((g) => g.items.length > 0);
+// Only offer filters that match at least one project.
+const filters = disciplines.filter((d) => all.some((p) => p.data.disciplines.includes(d.id)));
 ---
 
-<Base title="Projects" description="Urban analytics, urban design and architecture projects." sheet="P-00" sheetTitle="Register of projects">
+<Base title="Projects" description="Data, urbanism, architecture and landscape projects." sheet="P-00" sheetTitle="Register of projects">
   <section class="pad head">
     <p class="mono caps muted">Sheet P-00 · Register of projects</p>
     <h1>Projects</h1>
     <p class="measure">Parcel-level data and digital twins, urban design, and architecture, from Catalonia to the Western Cape. {all.length} sheets in this set.</p>
   </section>
-  {groups.map((g) => (
-    <section class="band">
-      <div class="band-head"><span>Series {g.series} · {g.label}</span><span>{g.items.length}</span></div>
-      <ol class="register">
-        {g.items.map((p) => (
-          <li>
-            <a class="reg-row" href={`${base}/projects/${p.id}/`}>
-              <span class="no">{sheetNumber(all, p.id)}</span>
-              <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
-              <span class="meta">{[p.data.location, p.data.year].filter(Boolean).join(' · ')}</span>
-              <span class="sub">{p.data.context}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
-  ))}
+  <section class="band">
+    <div class="band-head filters" role="group" aria-label="Filter projects">
+      <button type="button" class="chip on" data-filter="all">All <span>{all.length}</span></button>
+      {filters.map((d) => (
+        <button type="button" class="chip" data-filter={d.id}>{d.label} <span>{all.filter((p) => p.data.disciplines.includes(d.id)).length}</span></button>
+      ))}
+    </div>
+    <ol class="register">
+      {all.map((p) => (
+        <li data-tags={p.data.disciplines.join(' ')}>
+          <a class="reg-row" href={`${base}/projects/${p.id}/`}>
+            <span class="no">{sheetNumber(all, p.id)}</span>
+            <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
+            <span class="meta">{p.data.location}</span>
+            <span class="sub">{p.data.context}</span>
+            <span class="tags">{p.data.disciplines.map((t) => <span class="tag">{disciplineLabel(t)}</span>)}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
 </Base>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const rows = document.querySelectorAll<HTMLElement>('[data-tags]');
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const f = chip.dataset.filter!;
+      chips.forEach((c) => c.classList.toggle('on', c === chip));
+      rows.forEach((r) => (r.hidden = f !== 'all' && !r.dataset.tags!.split(' ').includes(f)));
+    }),
+  );
+</script>
 
 <style>
   .head h1 { font-size: clamp(48px, 7vw, 96px); letter-spacing: -0.045em; margin: 10px 0 20px; }
   .head p:last-child { margin: 0; }
+  .filters { justify-content: flex-start; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer;
+    background: none; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px;
+  }
+  .chip span { opacity: 0.6; margin-left: 4px; }
+  .chip:hover { color: var(--ink); }
+  .chip.on { color: var(--paper); background: var(--ink); border-color: var(--ink); }
+  .tags { grid-column: 2 / -1; display: flex; gap: 6px; margin-top: 6px; }
+  .tag {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--accent); border: 1px solid currentColor; padding: 2px 7px;
+  }
 </style>

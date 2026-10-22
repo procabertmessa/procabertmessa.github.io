@@ -1,7 +1,7 @@
 // Project order and home-page selection. Edit this file to reorder projects.
 // Each name is a folder in src/content/projects/.
 
-// Order on the Projects page (within each category) and on the home page. Move a line up or down to reorder.
+// Order on the Projects page and on the home page. Move a line up or down to reorder.
 // Projects not listed here still appear, after the listed ones.
 export const projectOrder = [
   // Pablo's priority list (2026-10-20)

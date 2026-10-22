@@ -1,7 +1,8 @@
 ---
 title: Civic facility
 summary: To be written.
-category: architecture
+disciplines:
+  - architecture
 context: To confirm
 draft: true
 cover: ./01-view.jpg

@@ -4,7 +4,7 @@ import { Image } from 'astro:assets';
 import Lightbox from '../../components/Lightbox.astro';
 import Base from '../../layouts/Base.astro';
 import { getProjects, sheetNumber } from '../../lib/projects';
-import { categoryLabel } from '../../data/categories';
+import { disciplineLabel } from '../../data/categories';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -30,7 +30,7 @@ const showPlates = mode !== 'side' && (plates.length > 0 || placeholders > 0);
 // Legend band under the text: what the project shows Pablo can do, and the tools used.
 const legends = ([['Skills', d.skills ?? []], ['Tools', d.stack ?? []]] as [string, string[]][]).filter(([, items]) => items.length > 0);
 const facts = [
-  ['Type', categoryLabel(d.category)],
+  ['Type', d.disciplines.map(disciplineLabel).join(' · ')],
   ['With', d.context],
   ['Role', d.role],
   ['Location', d.location],

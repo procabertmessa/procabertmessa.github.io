@@ -1,7 +1,8 @@
 ---
 title: Catalonia parcel-level real estate dataset
 summary: One GeoPackage covering every parcel in Catalonia, enriched with zoning, building use and business activity so developers can screen opportunities parcel by parcel.
-category: urban-analytics
+disciplines:
+  - data
 context: Aretian
 location: Catalonia, Spain
 year: '2026'

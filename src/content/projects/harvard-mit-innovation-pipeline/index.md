@@ -1,7 +1,8 @@
 ---
 title: 'Innovation-ecosystem pipeline: Harvard & MIT'
 summary: An LLM-assisted company-classification pipeline and a three-stage Sankey model tracing how research flows into industries and sectors.
-category: urban-analytics
+disciplines:
+  - data
 context: Aretian
 location: Cambridge, MA, USA
 tags: [AI, Data visualisation, Innovation]
