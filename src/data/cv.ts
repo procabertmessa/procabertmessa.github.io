@@ -13,9 +13,9 @@ export const person = {
   intro:
     'Architect and urban designer using data for better design decisions. Data shows what a place needs, and design turns it into a place people love. I work where the two meet, from buildings to cities to territories.',
   profile: [
-    'I am an architect and urban designer using data for better design decisions. My experience spans architecture, real estate investment analysis and urban analytics, and I currently coordinate city digital twin projects at Aretian.',
+    'I am an architect and urban designer using data for better design decisions. Experience across architecture, real estate investment analysis and urban analytics, most recently coordinating city digital twin projects at Aretian.',
     'My work sits between the drawing board and the dataset. I turn cadastral, zoning, socio-economic and climate data into parcel-level evidence and design proposals for city councils, public administrations and real estate clients.',
-    'Day to day, that means parametric design driven by data, so every proposal responds to what the city actually needs. I build the evidence with Python and GIS data pipelines, statistical modelling and LLM-assisted classification, and develop design options in Rhino and Grasshopper, backed by a Master’s in Architecture and Urbanism and a Master’s in Data Analytics & AI.',
+    'Day to day that means Python and GIS data pipelines, statistical modelling, LLM-assisted data classification and computational design, backed by a Master’s in Data Analytics & AI.',
   ],
   cv: {
     en: '/cv/Pablo_Rocabert_CV_EN.pdf',
