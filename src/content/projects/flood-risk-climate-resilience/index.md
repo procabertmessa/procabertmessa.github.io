@@ -6,6 +6,7 @@ disciplines:
   - urbanism
 context: Aretian
 location: Barcelona, Spain
+soon: true
 tags: [Climate resilience, Geospatial, Digital twins]
 stack: [QGIS, GeoPandas, OWSLib, ogr2ogr, OGC WFS/WMS, Copernicus, AMB, Open Data BCN]
 ---
