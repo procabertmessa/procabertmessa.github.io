@@ -4,14 +4,14 @@
 export const person = {
   name: 'Pablo Rocabert Messa',
   shortName: 'Pablo Rocabert',
-  headline: 'Urban Data Scientist & Urban Designer',
+  headline: 'Architect & Urban Design Manager',
   focus: ['Geospatial analytics', 'City digital twins', 'Urban planning', 'Architecture'],
   location: 'Barcelona, Spain',
   email: 'procabert.au@gmail.com',
   linkedin: 'https://www.linkedin.com/in/pablorocabertm',
   status: 'EU citizen · Eligible to work across the EU/EEA · Open to relocation and hybrid roles',
   intro:
-    'Architect and urban planner turned urban data scientist. I turn cadastral, zoning, socio-economic and climate data into parcel-level evidence and design proposals for city councils, public administrations and real estate clients.',
+    'I’m an architect and urban designer who uses data to make better design decisions. My experience spans architecture, real estate investment analysis and urban analytics, most recently coordinating the teams that build city digital twins at Aretian.',
   profile: [
     'I am an architect and urban planner turned urban data scientist, with 8 years of experience across architecture, real estate investment analysis and urban analytics, including 2+ years building city digital twins at Aretian.',
     'My work sits between the drawing board and the dataset. I turn cadastral, zoning, socio-economic and climate data into parcel-level evidence and design proposals for city councils, public administrations and real estate clients.',

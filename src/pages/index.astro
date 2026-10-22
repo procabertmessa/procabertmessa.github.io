@@ -16,7 +16,7 @@ const span = (j: (typeof experience)[number]) =>
   <section class="hero">
     <ParcelMap />
     <div class="intro">
-      <h1>Designing cities<br />with evidence.</h1>
+      <h1>Designing with evidence,<br class="wide" /> from building to city.</h1>
       <p class="lede">{person.intro} {person.location}.</p>
     </div>
   </section>
@@ -62,6 +62,7 @@ const span = (j: (typeof experience)[number]) =>
   .band-head a:hover { color: var(--ink); }
   .reg-row { grid-template-columns: 180px 1fr auto; }
   @media (max-width: 640px) {
+    h1 br.wide { display: none; }
     .reg-row { grid-template-columns: 1fr; }
     .hero { min-height: 520px; }
   }
