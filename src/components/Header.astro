@@ -3,8 +3,8 @@ import { person } from '../data/cv';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const links = [
-  { href: '/projects/', label: 'Projects', code: 'P-00' },
   { href: '/about/', label: 'About', code: 'A-01' },
+  { href: '/projects/', label: 'Projects', code: 'P-00' },
   { href: '/blog/', label: 'Blog', code: 'B-00' },
 ];
 const path = Astro.url.pathname.replace(base, '') || '/';
