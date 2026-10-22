@@ -18,8 +18,8 @@ export const person = {
     'Day to day that means Python and GIS data pipelines, statistical modelling, LLM-assisted data classification and computational design, backed by a Master’s in Data Analytics & AI.',
   ],
   cv: {
-    en: '/cv/Pablo_Rocabert_CV_Europe_EN.pdf',
-    es: '/cv/Pablo_Rocabert_CV_Europe_ES.pdf',
+    en: '/cv/Pablo_Rocabert_CV_EN.pdf',
+    es: '/cv/Pablo_Rocabert_CV_ES.pdf',
   },
 };
 
