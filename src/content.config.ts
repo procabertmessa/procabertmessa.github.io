@@ -24,6 +24,17 @@ const projects = defineCollection({
       cover: image().optional(), // e.g. ./01-cover.jpg (file in the same folder)
       // Data projects only (projects without the data tag use the architecture layout). How the images sit on the page: hero (cover across the page + plates grid), side (viewer beside the text), sheet (plates grid under the text).
       gallery: z.enum(['hero', 'side', 'sheet']).default('side'),
+      // Architecture layout: the story in short chapters, each with its own images (drawing: true sits on a white sheet).
+      chapters: z
+        .array(
+          z.object({
+            title: z.string(),
+            text: z.string(),
+            scales: z.array(z.string()).default([]), // e.g. "Plans 1/250"
+            images: z.array(z.object({ src: image(), caption: z.string().optional(), drawing: z.boolean().default(false) })).default([]),
+          }),
+        )
+        .default([]),
       images: z.array(z.object({ src: image(), caption: z.string().optional(), drawing: z.boolean().default(false) })).default([]), // drawing: true sits on a white sheet
     }),
 });

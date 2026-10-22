@@ -43,7 +43,7 @@ const facts = [
 
 <Base title={d.title} description={d.summary} sheet={no} sheetTitle={d.title}>
   {isArch ? (
-    <ArchitectureProject project={project} no={no}><Content /></ArchitectureProject>
+    <ArchitectureProject project={project} no={no} />
   ) : (
   <>
   <section class="pad head">
