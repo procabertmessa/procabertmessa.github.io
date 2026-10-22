@@ -30,6 +30,7 @@ tags:
   - Digital twins
   - Geospatial
   - Public sector
+gallery: stack
 cover: ./01-landing.jpg
 images:
   - src: ./03-the-model.jpg

@@ -25,7 +25,7 @@ const projects = defineCollection({
       wip: z.boolean().default(false), // true = shows an "In progress" tag
       cover: image().optional(), // e.g. ./01-cover.jpg (file in the same folder)
       // Data projects only (projects without the data tag use the architecture layout). How the images sit on the page: hero (cover across the page + plates grid), side (viewer beside the text), sheet (plates grid under the text).
-      gallery: z.enum(['hero', 'side', 'sheet']).default('side'),
+      gallery: z.enum(['hero', 'side', 'stack', 'sheet']).default('side'), // stack: images one under another beside the text
       // Architecture layout: the story in short chapters, each with its own images (drawing: true sits on a white sheet).
       chapters: z
         .array(
