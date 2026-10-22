@@ -11,7 +11,7 @@ export const person = {
   linkedin: 'https://www.linkedin.com/in/pablorocabertm',
   status: 'EU citizen · Eligible to work across the EU/EEA · Open to relocation and hybrid roles',
   intro:
-    'Architect and urban designer using data for better design decisions. Shaping the city of tomorrow, one plot at a time, combining the rigour of data with an architect’s eye for beauty.',
+    'Architect and urban designer using data for better design decisions. Data shows what a place needs; design turns it into a place people love. I work where the two meet, from building to city.',
   profile: [
     'Architect and urban designer using data for better design decisions. Experience across architecture, real estate investment analysis and urban analytics, most recently coordinating city digital twin projects at Aretian.',
     'My work sits between the drawing board and the dataset. I turn cadastral, zoning, socio-economic and climate data into parcel-level evidence and design proposals for city councils, public administrations and real estate clients.',
