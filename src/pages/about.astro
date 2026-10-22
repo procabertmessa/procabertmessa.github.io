@@ -15,9 +15,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <!-- The portrait is cut to an Eixample block: a square with chamfers at Cerdà's proportions (15 m on 113 m). -->
     <figure class="portrait">
       <div class="block">
-        <Image src={portrait} alt={person.name} widths={[360, 720]} sizes="(max-width: 860px) 70vw, 340px" loading="eager" />
+        <Image src={portrait} alt={person.name} widths={[360, 720]} sizes="(max-width: 860px) 64vw, 250px" loading="eager" />
       </div>
-      <figcaption class="mono muted">{person.name} · {person.location}</figcaption>
+      <figcaption class="mono muted">{person.location}</figcaption>
     </figure>
   </section>
 
@@ -98,16 +98,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 </Base>
 
 <style>
-  .head { display: grid; grid-template-columns: 1fr minmax(220px, 340px); gap: 48px; align-items: end; }
+  .head { display: grid; grid-template-columns: 1fr minmax(180px, 250px); gap: 48px; align-items: end; }
   .head h1 { font-size: clamp(40px, 6vw, 84px); letter-spacing: -0.04em; margin-top: 10px; max-width: 14ch; }
-  .portrait { position: relative; margin: 0; aspect-ratio: 1; }
+  .portrait { margin: 0; }
   .portrait .block {
-    position: absolute; inset: 0; overflow: hidden;
+    position: relative; aspect-ratio: 1; overflow: hidden;
     clip-path: polygon(13.2% 0, 86.8% 0, 100% 13.2%, 100% 86.8%, 86.8% 100%, 13.2% 100%, 0 86.8%, 0 13.2%);
   }
   /* Zoomed in on the face so it fills the block. */
-  .portrait .block :global(img) { width: 100%; height: 100%; object-fit: cover; transform: scale(1.45); transform-origin: 48% 42%; }
-  .portrait figcaption { position: absolute; left: 0; right: 0; bottom: -26px; text-align: center; font-size: 10.5px; }
+  .portrait .block :global(img) { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transform-origin: 48% 40%; }
+  .portrait figcaption { margin-top: 12px; text-align: center; font-size: 10.5px; }
   .split { display: grid; grid-template-columns: 1fr 340px; }
   .prose .first { font-size: 21px; line-height: 1.45; color: var(--ink); }
   .side { border-left: 1px solid var(--line); }
@@ -136,7 +136,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   @media (max-width: 860px) {
     .split, .two, .job, .skills, .head { grid-template-columns: 1fr; }
-    .portrait { width: min(320px, 78vw); margin-bottom: 30px; }
+    .portrait { width: min(240px, 64vw); margin-bottom: 30px; }
     .side, .langs { border-left: 0; border-top: 1px solid var(--line); }
     .skills div:nth-child(odd) { border-right: 0; }
     .job { gap: 14px; padding: 22px 14px; }
