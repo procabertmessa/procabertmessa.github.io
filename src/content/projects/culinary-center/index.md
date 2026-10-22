@@ -16,36 +16,30 @@ chapters:
   - title: Site
     text: The centre starts from the Pavilion of the Republic and its courtyard, and stitches them to the hillside below, where the old allotments return as a public park.
     images:
-      - src: ./03-site-plan.jpg
-        caption: Site plan
+      - src: ./02-location.jpg
+        caption: La Clota in its neighbourhood
         drawing: true
-      - src: ./10-la-clota-today.jpg
-        caption: The centre above its new allotment park
-  - title: Plan
+      - src: ./03-site-plan.jpg
+        caption: Site plan with the allotment park
+        drawing: true
+      - src: ./04-la-clota-view.jpg
+        caption: The centre above its allotment park
+  - title: Plan & section
     text: Parallel earth walls run along the plinth and organise the whole centre. Small courtyards between them bring daylight and cross-ventilation into the buried rooms. The roof becomes a lookout square over the city.
     images:
-      - src: ./04-ground-floor-plan.jpg
-        caption: Ground floor plan
+      - src: ./05-floor-plan.jpg
+        caption: Floor plan
         drawing: true
-      - src: ./05-sections.jpg
-        caption: Long sections through the courtyards
+      - src: ./06-section.jpg
+        caption: Sections through the courtyards
         drawing: true
-      - src: ./02-roof-square.jpg
+      - src: ./07-roof-square.jpg
         caption: The roof as a lookout square
-  - title: Spaces
-    text: Timber roofs over earth walls give warm, quiet rooms built around the act of cooking.
+  - title: Spaces & construction
+    text: Walls of compacted earth from the site, under timber roofs. Their thermal mass and moisture regulation cut the building's energy demand almost in half, and make warm, quiet rooms built around cooking.
     images:
-      - src: ./06-gallery.jpg
+      - src: ./08-gallery.jpg
         caption: Gallery and dining
-      - src: ./07-kitchen.jpg
+      - src: ./09-kitchen.jpg
         caption: Teaching kitchen
-  - title: Construction & energy
-    text: Walls of compacted earth from the site itself. Their thermal mass and moisture regulation cut the building's energy demand almost in half.
-    images:
-      - src: ./08-structure.jpg
-        caption: "Structure: foundations, walls, roof"
-        drawing: true
-      - src: ./09-construction-section.jpg
-        caption: Construction section
-        drawing: true
 ---

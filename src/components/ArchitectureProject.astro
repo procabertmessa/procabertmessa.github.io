@@ -98,9 +98,9 @@ const region = d.location?.split(',').slice(-2, -1)[0]?.trim() ?? d.location;
 
   .figs { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 16px; align-items: start; }
   .figs figure { margin: 0; }
-  .frame { display: grid; place-items: center; width: 100%; height: 320px; padding: 0; border: 0; overflow: hidden; background: #151517; cursor: zoom-in; }
+  .frame { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; overflow: hidden; background: #151517; cursor: zoom-in; }
   .frame :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .frame.drawing { background: #fff; padding: 12px; }
+  .frame.drawing { background: #fff; padding: 4px; }
   .frame.drawing :global(img) { object-fit: contain; }
   .frame:hover { outline: 1px solid var(--accent); }
   figcaption { margin-top: 7px; font-size: 10.5px; color: var(--muted); }
@@ -112,6 +112,6 @@ const region = d.location?.split(',').slice(-2, -1)[0]?.trim() ?? d.location;
     .chapter { grid-template-columns: 1fr; gap: 24px; padding: 40px 14px; }
     .side { position: static; }
     .figs { grid-template-columns: 1fr; }
-    .frame { height: 260px; }
+    .frame { aspect-ratio: 4 / 3; }
   }
 </style>
