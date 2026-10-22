@@ -43,6 +43,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         if (t) document.documentElement.dataset.theme = t;
       } catch (e) {}
     </script>
+    <!-- Visitor analytics (Umami Cloud, cookie-free) -->
+    <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="84ec6a91-9cae-4c6e-b27f-27ef49bfaa03"></script>
   </head>
   <body>
     <a class="sr-only" href="#main">Skip to content</a>
