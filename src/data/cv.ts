@@ -13,7 +13,7 @@ export const person = {
   intro:
     'Architect and urban designer using data for better design decisions. Experience across architecture, real estate investment analysis and urban analytics, most recently coordinating city digital twin projects at Aretian.',
   profile: [
-    'I am an architect and urban planner turned urban data scientist, with 8 years of experience across architecture, real estate investment analysis and urban analytics, including 2+ years building city digital twins at Aretian.',
+    'Architect and urban designer using data for better design decisions. Experience across architecture, real estate investment analysis and urban analytics, most recently coordinating city digital twin projects at Aretian.',
     'My work sits between the drawing board and the dataset. I turn cadastral, zoning, socio-economic and climate data into parcel-level evidence and design proposals for city councils, public administrations and real estate clients.',
     'Day to day that means Python and GIS data pipelines, statistical modelling, LLM-assisted data classification and computational design, backed by a Master’s in Data Analytics & AI.',
   ],
