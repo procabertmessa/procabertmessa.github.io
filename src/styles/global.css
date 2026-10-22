@@ -95,6 +95,13 @@ a.reg-row:hover .title { color: var(--ink); }
 .prose strong { color: var(--ink); font-weight: 600; }
 .prose blockquote { margin: 1.5em 0; padding-left: 1em; border-left: 2px solid var(--accent); color: var(--ink); }
 .prose code { font-family: var(--mono); font-size: 0.85em; }
+.prose img { width: 100%; height: auto; margin: 2em 0 0.4em; border: 1px solid var(--line); }
+.prose p:has(> img) { margin-bottom: 2em; }
+.prose p:has(> img) small { display: block; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.prose table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.prose th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: left; }
+.prose th, .prose td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.prose td:not(:first-child), .prose th:not(:first-child) { text-align: right; white-space: nowrap; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
