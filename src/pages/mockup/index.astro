@@ -1,0 +1,151 @@
+---
+import { Image } from 'astro:assets';
+import Mockup from '../../layouts/Mockup.astro';
+import { getProjects } from '../../lib/projects';
+import { person } from '../../data/cv';
+import { disciplines, disciplineLabel } from '../../data/categories';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const projects = await getProjects();
+const used = disciplines.filter((d) => projects.some((p) => p.data.disciplines.includes(d.id)));
+// Words the search box matches against: everything a visitor might type about a project.
+const haystack = (p: (typeof projects)[number]) =>
+  [p.data.title, p.data.summary, p.data.context, p.data.location, p.data.role, ...p.data.disciplines, ...p.data.tags, ...p.data.skills, ...p.data.stack]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+const prompts = ['housing in Barcelona', 'projects with GIS data', 'architecture with drawings', 'landscape and public space', 'digital twins'];
+---
+
+<Mockup>
+  <section class="hero wrap">
+    <p class="mono muted eyebrow"><span class="dot"></span> Architect · Urban designer · Barcelona</p>
+    <h1>Designing cities with evidence.</h1>
+    <p class="lede">{person.intro}</p>
+
+    <form class="ask" role="search" onsubmit="return false">
+      <label class="sr" for="q">Search projects</label>
+      <span class="spark" aria-hidden="true">✦</span>
+      <input id="q" type="text" autocomplete="off" placeholder="Ask about my work…" data-prompts={JSON.stringify(prompts)} />
+      <kbd class="mono">↵</kbd>
+    </form>
+    <div class="chips">
+      {used.map((d) => <button type="button" class="chip" data-tag={d.id}>{d.label}</button>)}
+      <a class="chip" href={`${base}/mockup/about/`}>About me →</a>
+    </div>
+    <p class="answer mono muted" aria-live="polite" data-total={projects.length}>{projects.length} projects · data, urbanism, architecture and landscape</p>
+  </section>
+
+  <section id="index" class="wrap index">
+    <div class="index-head mono muted"><span>Index</span><span class="hide-s">With</span><span class="hide-s">Type</span></div>
+    <ol>
+      {projects.map((p, i) => (
+        <li data-tags={p.data.disciplines.join(' ')} data-text={haystack(p)}>
+          <a href={`${base}/mockup/projects/${p.id}/`}>
+            <span class="no mono muted">{String(i + 1).padStart(2, '0')}</span>
+            <span class="t">{p.data.title.split(' — ')[0]}</span>
+            <span class="c muted hide-s">{p.data.context}</span>
+            <span class="d mono muted">{p.data.disciplines.map(disciplineLabel).join(', ')}</span>
+            {p.data.cover && (
+              <span class="thumb" aria-hidden="true">
+                <Image src={p.data.cover} alt="" widths={[160, 480]} sizes="(max-width: 640px) 64px, 240px" />
+              </span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+</Mockup>
+
+<script>
+  const q = document.getElementById('q') as HTMLInputElement;
+  const rows = [...document.querySelectorAll<HTMLLIElement>('.index li')];
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip[data-tag]')];
+  const answer = document.querySelector<HTMLElement>('.answer')!;
+  const total = answer.dataset.total;
+  let tag = '';
+
+  function update() {
+    const words = q.value.toLowerCase().split(/\s+/).filter((w) => w.length > 2 && !['with', 'and', 'the', 'projects', 'project', 'show'].includes(w));
+    let n = 0;
+    for (const r of rows) {
+      const hit = (!tag || r.dataset.tags!.split(' ').includes(tag)) && (words.length === 0 || words.some((w) => r.dataset.text!.includes(w)));
+      r.hidden = !hit;
+      if (hit) n++;
+    }
+    const what = [tag && chips.find((c) => c.dataset.tag === tag)?.textContent, q.value.trim() && `“${q.value.trim()}”`].filter(Boolean).join(' + ');
+    answer.textContent = what ? `${n} of ${total} projects match ${what}` : `${total} projects · data, urbanism, architecture and landscape`;
+  }
+  q.addEventListener('input', update);
+  for (const c of chips)
+    c.addEventListener('click', () => {
+      tag = tag === c.dataset.tag ? '' : c.dataset.tag!;
+      chips.forEach((x) => x.classList.toggle('on', x.dataset.tag === tag));
+      update();
+    });
+
+  // The placeholder types out example questions, like an AI prompt box, until the visitor starts typing.
+  const prompts: string[] = JSON.parse(q.dataset.prompts!);
+  let p = 0, c = 0, del = false;
+  function tick() {
+    if (document.activeElement === q || q.value) { q.placeholder = 'Ask about my work…'; return setTimeout(tick, 800); }
+    const s = prompts[p];
+    c += del ? -1 : 1;
+    q.placeholder = `Show me ${s.slice(0, c)}`;
+    if (!del && c === s.length) { del = true; return setTimeout(tick, 1600); }
+    if (del && c === 0) { del = false; p = (p + 1) % prompts.length; }
+    setTimeout(tick, del ? 25 : 55);
+  }
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(tick, 900);
+</script>
+
+<style>
+  .hero { padding-top: clamp(80px, 16vh, 180px); padding-bottom: 72px; }
+  .eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 28px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  h1 { font-size: clamp(40px, 6vw, 76px); line-height: 1; letter-spacing: -0.045em; max-width: 14ch; }
+  .lede { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.55; max-width: 34em; margin: 28px 0 48px; text-wrap: balance; }
+
+  .ask { position: relative; display: flex; align-items: center; gap: 12px; max-width: 640px; padding: 8px 10px 8px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 1px 0 rgba(0,0,0,.02), 0 12px 32px -18px rgba(0,0,0,.18); transition: border-color .2s; }
+  .ask:focus-within { border-color: color-mix(in srgb, var(--green) 55%, var(--line)); }
+  .spark { color: var(--green); font-size: 14px; }
+  .ask input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: 400 16px/1 var(--sans); color: var(--ink); padding: 12px 0; }
+  .ask input::placeholder { color: var(--muted); }
+  kbd { border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; color: var(--muted); background: var(--soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; max-width: 640px; }
+  .chip { cursor: pointer; transition: border-color .15s, color .15s; }
+  .chip:hover { border-color: var(--muted); color: var(--ink); }
+  .chip.on { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+  .answer { margin: 18px 0 0; min-height: 1.5em; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  .index-head, .index a { display: grid; grid-template-columns: 44px minmax(0, 1.6fr) minmax(0, 1fr) 180px; gap: 16px; align-items: baseline; }
+  .index-head { padding: 0 0 12px; border-bottom: 1px solid var(--line); }
+  .index-head span:first-child { grid-column: 1 / 3; }
+  .index-head span:last-child { text-align: right; }
+  .index ol { list-style: none; margin: 0; padding: 0; }
+  .index li { border-bottom: 1px solid var(--line); }
+  .index a { position: relative; padding: 18px 0; text-decoration: none; }
+  .t { color: var(--ink); font-size: 17px; letter-spacing: -0.01em; transition: transform .25s; }
+  .c { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .d { text-align: right; }
+  .index a:hover .t { transform: translateX(6px); }
+  /* Hover preview: the cover floats beside the row, like the index sites Pablo referenced. */
+  .thumb { position: absolute; right: 200px; top: 50%; width: 240px; aspect-ratio: 4 / 3; transform: translateY(-50%) scale(.96); opacity: 0; pointer-events: none; transition: opacity .2s, transform .25s; border-radius: 10px; overflow: hidden; z-index: 2; box-shadow: 0 20px 40px -20px rgba(0,0,0,.35); }
+  .thumb :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .index a:hover .thumb { opacity: 1; transform: translateY(-50%) scale(1); }
+
+  @media (max-width: 640px) {
+    .hero { padding-top: 56px; padding-bottom: 48px; }
+    .lede { margin: 20px 0 32px; }
+    .hide-s { display: none; }
+    .index-head, .index a { grid-template-columns: 28px minmax(0, 1fr) 64px; gap: 12px; align-items: center; }
+    .index-head span:first-child { grid-column: auto; }
+    .index a { padding: 14px 0; row-gap: 4px; align-content: center; }
+    .t { font-size: 16px; line-height: 1.3; }
+    .d { grid-column: 2; grid-row: 2; text-align: left; font-size: 11px; }
+    .thumb { position: static; grid-column: 3; grid-row: 1 / 3; width: 64px; opacity: 1; transform: none; border-radius: 6px; box-shadow: none; }
+    .index a:hover .thumb { transform: none; }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+import { Image } from 'astro:assets';
+import Mockup from '../../layouts/Mockup.astro';
+import portrait from '../../assets/pablo-portrait.jpg';
+import { person, skills, experience, education, languages } from '../../data/cv';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const years = (dates: string) => dates.replace(/[A-Z][a-z]{2} /g, '');
+---
+
+<Mockup title="About" active="about">
+  <section class="wrap head">
+    <div>
+      <p class="mono muted eyebrow">About</p>
+      <h1>Architect by training, urban designer by practice.</h1>
+    </div>
+    <Image class="portrait" src={portrait} alt={person.name} widths={[240, 480]} sizes="160px" loading="eager" />
+  </section>
+
+  <section class="wrap cols">
+    <div class="prose">
+      {person.profile.map((p, i) => <p class:list={{ first: i === 0 }}>{p}</p>)}
+      <div class="actions">
+        <a class="btn" href={`${base}${person.cv.en}`}>Download CV ↓</a>
+        <a class="chip" href={`${base}${person.cv.es}`}>CV en español</a>
+        <a class="chip" href={`mailto:${person.email}`}>Email</a>
+        <a class="chip" href={person.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+      <p class="mono muted status">{person.status}</p>
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <h2 class="mono muted">Experience</h2>
+    <ol class="rows">
+      {experience.map((j) => (
+        <li>
+          <span class="mono muted">{years(`${j.roles[j.roles.length - 1].dates.split('–')[0]}– ${j.roles[0].dates.split('–')[1]}`)}</span>
+          <span class="t">{j.roles[0].title}</span>
+          <span class="muted">{j.org}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap block">
+    <h2 class="mono muted">Education</h2>
+    <ol class="rows">
+      {education.map((e) => (
+        <li>
+          <span class="mono muted">{e.dates.split('–').pop()?.trim().replace(/[A-Z][a-z]{2} /, '')}</span>
+          <span class="t">{e.title}</span>
+          <span class="muted">{e.school.split(',')[0]}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap block">
+    <h2 class="mono muted">Skills</h2>
+    <div class="skills">
+      {skills.map((s) => (
+        <div>
+          <p class="t">{s.group}</p>
+          <div class="chips">{s.items.map((it) => <span class="chip">{it.replace(/ \(.*\)/, '')}</span>)}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <h2 class="mono muted">Languages</h2>
+    <p class="langs">{languages.map((l) => <span><span class="t">{l.name}</span> <span class="muted">{l.level}</span></span>)}</p>
+  </section>
+</Mockup>
+
+<style>
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; padding-top: clamp(56px, 12vh, 140px); padding-bottom: 56px; }
+  .eyebrow { margin: 0 0 24px; }
+  h1 { font-size: clamp(36px, 5.2vw, 66px); line-height: 1.02; letter-spacing: -0.045em; max-width: 15ch; }
+  .head :global(.portrait) { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; flex: none; filter: grayscale(1); }
+  .cols { display: grid; grid-template-columns: minmax(0, 680px); }
+  .prose p { font-size: 16px; line-height: 1.7; margin: 0 0 18px; }
+  .prose .first { font-size: clamp(19px, 2vw, 23px); line-height: 1.5; color: var(--ink); letter-spacing: -0.01em; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+  .btn { display: inline-flex; align-items: center; padding: 9px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none; font-size: 13px; font-weight: 500; }
+  .chip:hover { border-color: var(--muted); color: var(--ink); }
+  .status { margin-top: 18px !important; font-size: 12px !important; }
+
+  .block { margin-top: 96px; }
+  .block h2 { font-size: 12px; font-weight: 400; letter-spacing: 0; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .t { color: var(--ink); }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rows li { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .rows li .t { font-size: 16px; }
+  .skills { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 56px; padding-top: 24px; }
+  .skills .t { margin: 0 0 12px; font-size: 15px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips .chip { font-size: 11px; padding: 6px 9px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 12px 40px; padding-top: 20px; margin: 0; }
+
+  @media (max-width: 640px) {
+    .head { flex-direction: column-reverse; align-items: flex-start; gap: 28px; padding-bottom: 40px; }
+    .head :global(.portrait) { width: 96px; height: 96px; }
+    .block { margin-top: 64px; }
+    .rows li { grid-template-columns: 1fr; gap: 2px; }
+    .skills { grid-template-columns: 1fr; gap: 28px; }
+    .langs { flex-direction: column; gap: 8px; }
+  }
+</style>
