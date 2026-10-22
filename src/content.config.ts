@@ -15,15 +15,16 @@ const projects = defineCollection({
       location: z.string().optional(),
       year: z.string().optional(),
       role: z.string().optional(),
+      facts: z.array(z.object({ label: z.string(), value: z.string() })).default([]), // extra facts, e.g. Programme, Structure
       url: z.string().url().optional(), // live project website, if any
       stack: z.array(z.string()).default([]),
       skills: z.array(z.string()).default([]),
       tags: z.array(z.string()).default([]),
       draft: z.boolean().default(false), // true = hidden on the live site, visible in `npm run dev`
       cover: image().optional(), // e.g. ./01-cover.jpg (file in the same folder)
-      // How the images sit on the page: hero (cover across the page + plates grid), side (viewer beside the text), sheet (plates grid under the text).
+      // Data projects only (projects without the data tag use the architecture layout). How the images sit on the page: hero (cover across the page + plates grid), side (viewer beside the text), sheet (plates grid under the text).
       gallery: z.enum(['hero', 'side', 'sheet']).default('side'),
-      images: z.array(z.object({ src: image(), caption: z.string().optional() })).default([]),
+      images: z.array(z.object({ src: image(), caption: z.string().optional(), drawing: z.boolean().default(false) })).default([]), // drawing: true sits on a white sheet
     }),
 });
 
