@@ -6,10 +6,14 @@ import { person } from '../data/cv';
 interface Props {
   title?: string;
   active?: 'about' | 'projects' | 'home';
+  /** Which mockup the links stay in: 'mockup' (first proposal) or 'mockup-2' (the "atlas" proposal). */
+  root?: 'mockup' | 'mockup-2';
+  /** Hide the footer on full-screen pages. */
+  bare?: boolean;
 }
-const { title, active = 'home' } = Astro.props;
+const { title, active = 'home', root = 'mockup', bare = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const m = `${base}/mockup`;
+const m = `${base}/${root}`;
 const fullTitle = title ? `${title} · ${person.shortName}` : `${person.name} · ${person.headline}`;
 ---
 
@@ -24,7 +28,7 @@ const fullTitle = title ? `${title} · ${person.shortName}` : `${person.name} ·
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
-  <body>
+  <body class={root}>
     <header class="top">
       <a class="name" href={`${m}/`}>{person.name} <span><b>· </b>{person.headline}</span></a>
       <nav>
@@ -34,14 +38,14 @@ const fullTitle = title ? `${title} · ${person.shortName}` : `${person.name} ·
       </nav>
     </header>
     <main><slot /></main>
-    <footer class="foot">
+    {!bare && <footer class="foot">
       <span class="status"><i></i> Open to new roles · {person.location}</span>
       <span class="links">
         <a href={`mailto:${person.email}`}>{person.email}</a>
         <a href={person.linkedin} rel="noopener" target="_blank">LinkedIn ↗</a>
         <a href={`${base}${person.cv.en}`}>CV (PDF) ↓</a>
       </span>
-    </footer>
+    </footer>}
   </body>
 </html>
 
@@ -57,6 +61,8 @@ const fullTitle = title ? `${title} · ${person.shortName}` : `${person.name} ·
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
+  /* Second proposal: the dotted drawing-board ground Pablo kept on the live site. */
+  body.mockup-2 { background-image: radial-gradient(circle, color-mix(in srgb, var(--muted) 38%, transparent) 0.8px, transparent 1px); background-size: 18px 18px; background-attachment: fixed; }
   body { margin: 0; background: var(--bg); color: var(--body); font: 400 15px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
   a { color: inherit; }
   img { display: block; max-width: 100%; height: auto; }
@@ -70,7 +76,7 @@ const fullTitle = title ? `${title} · ${person.shortName}` : `${person.name} ·
 </style>
 
 <style>
-  .top { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 32px; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 13px; }
+  .top { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 32px; background: color-mix(in srgb, var(--bg) 96%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 13px; }
   .name { text-decoration: none; color: var(--ink); font-weight: 500; }
   .name span { color: var(--muted); font-weight: 400; }
   .name b { font-weight: 400; }

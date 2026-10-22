@@ -1,0 +1,311 @@
+---
+// Second mockup: the home page as an "atlas" of the work, read like an AI embedding map,
+// with a prompt bar that answers from the site's own content and cites the projects it used.
+import { getImage } from 'astro:assets';
+import Mockup from '../../layouts/Mockup.astro';
+import { getProjects } from '../../lib/projects';
+import { person, experience } from '../../data/cv';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const projects = await getProjects();
+
+// Where each project sits on the atlas: x = scale (building → territory), y = design (top) → data (bottom).
+// Placed by hand for the mockup; projects not listed fall back to their disciplines.
+const place: Record<string, [number, number, string]> = {
+  winery: [0.1, 0.18, "Plà de l'Avellà Winery"],
+  'culinary-center': [0.23, 0.3, 'La Clota Culinary Center'],
+  'social-housing': [0.32, 0.14, 'Fent Poble housing'],
+  'apartment-muntaner': [0.06, 0.4, 'Apartment Muntaner'],
+  'sant-boi-urban-development': [0.5, 0.36, 'Sant Boi urban analysis'],
+  'flood-risk-climate-resilience': [0.53, 0.54, 'Flood risk & resilience'],
+  'eu-urban-initiative-bid': [0.44, 0.71, 'Municipal digital twin'],
+  'hedonic-housing-model': [0.62, 0.86, 'Housing-price model'],
+  'harvard-mit-innovation-pipeline': [0.7, 0.64, 'Harvard & MIT pipeline'],
+  'city-digital-twin': [0.84, 0.76, 'City Digital Twin'],
+  'catalonia-parcel-dataset': [0.78, 0.9, 'Parcel dataset'],
+  'western-cape-innovation': [0.92, 0.6, 'Western Cape diagnostic'],
+};
+const nodes = await Promise.all(
+  projects.map(async (p, i) => {
+    const d = p.data;
+    const fallback: [number, number, string] = [d.disciplines.includes('data') ? 0.7 : 0.25, d.disciplines.includes('data') ? 0.75 : 0.25, d.title];
+    const [x, y, short] = place[p.id] ?? fallback;
+    const thumb = d.cover ? (await getImage({ src: d.cover, width: 480 })).src : null;
+    return {
+      id: p.id, n: i + 1, x, y, short, thumb,
+      title: d.title, context: d.context, disciplines: d.disciplines, summary: d.summary,
+      href: `${base}/mockup-2/projects/${p.id}/`,
+      text: [d.title, d.summary, d.context, d.location, d.role, ...d.disciplines, ...d.tags, ...d.skills, ...d.stack].filter(Boolean).join(' ').toLowerCase(),
+    };
+  }),
+);
+
+// Answers are composed from the site's content, never generated: each cites the projects it draws on as [[id]].
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+const list = (ids: string[]) => ids.map((id) => { const n = nodes.find((x) => x.id === id)!; return `${n.short} [[${id}]], ${lower(n.summary.replace(/\.$/, ''))}.`; });
+const by = (tag: string) => nodes.filter((n) => n.disciplines.includes(tag as never)).map((n) => n.id);
+const [aretian, turull] = experience;
+const answers = [
+  {
+    keys: ['manag', 'coordinat', 'lead', 'team', 'stakeholder'],
+    text: [
+      `Yes. At ${aretian.org.split(' ')[0]} he coordinates the developers, product design and data teams of the City Digital Twin [[city-digital-twin]], turning client needs into content and features.`,
+      aretian.bullets[2], aretian.bullets[3],
+      `Before that, at ${turull.org}: ${lower(turull.bullets[2])}`,
+    ],
+  },
+  {
+    keys: ['who', 'worked', 'compan', 'firm', 'experience', 'career'],
+    text: [
+      ...experience.map((j) => `${j.roles[0].title} at ${j.org}.`),
+      'Public-sector users of his work include the Barcelona Metropolitan Area (AMB), INCASÒL and the Generalitat de Catalunya [[city-digital-twin]].',
+    ],
+  },
+  {
+    keys: ['hire', 'contact', 'availab', 'cv', 'email', 'relocat', 'job', 'role'],
+    text: [`${person.status}.`, `Write to ${person.email} or download the CV from the footer.`],
+  },
+  { keys: ['landscape', 'park', 'public space', 'garden'], text: ['Projects where the ground and the landscape lead the design:', ...list(by('landscape'))] },
+  { keys: ['built', 'build', 'architect', 'design', 'drawing', 'plan', 'winery', 'culinary', 'house'], text: ['Architecture on this site:', ...list(by('architecture')), `In practice he delivered basic and construction-stage projects at ${turull.org}.`] },
+  { keys: ['data', 'gis', 'python', 'analy', 'twin', 'model', 'ai', 'llm', 'map'], text: ['Data and urban analytics work:', ...list(by('data'))] },
+  { keys: ['urban', 'city', 'cities', 'planning', 'territor'], text: ['Work at city and territorial scale:', ...list(by('urbanism'))] },
+];
+const suggestions = ['What has he built?', 'Show me the data work', 'Can he manage teams?', 'Who has he worked with?'];
+
+// Soft contour rings around the two clusters, like density lines on an embedding map (and isolines on a site plan).
+const ring = (cx: number, cy: number, r: number, seed: number) => {
+  const pts = Array.from({ length: 48 }, (_, k) => {
+    const a = (k / 48) * Math.PI * 2;
+    const rr = r * (1 + 0.09 * Math.sin(a * 3 + seed) + 0.05 * Math.cos(a * 5 + seed * 2));
+    return `${(cx + Math.cos(a) * rr * 1.5).toFixed(1)},${(cy + Math.sin(a) * rr).toFixed(1)}`;
+  });
+  return `M${pts.join('L')}Z`;
+};
+const rings = [
+  ...[40, 75, 112].map((r, k) => ring(170, 140, r, 1 + k)),
+  ...[50, 92, 140, 186].map((r, k) => ring(720, 470, r, 4 + k)),
+];
+---
+
+<Mockup root="mockup-2">
+  <section class="intro">
+    <h1>Designing cities<br />with evidence.</h1>
+    <p class="lede">{person.intro}</p>
+  </section>
+
+  <section id="index" class="atlas-wrap">
+    <div class="atlas-bar mono muted">
+      <span><span class="live"></span> Atlas of work · {projects.length} projects</span>
+      <span class="hide-s">Each point is a project, placed by scale and by how much it leans on design or data</span>
+    </div>
+    <div class="atlas">
+      <svg viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+        {rings.map((d) => <path d={d} class="ring" vector-effect="non-scaling-stroke" />)}
+        <line x1="40" y1="40" x2="960" y2="580" class="meet" vector-effect="non-scaling-stroke" />
+      </svg>
+      <span class="ax ax-top mono">↑ Design</span>
+      <span class="ax ax-bot mono">↓ Data</span>
+      <span class="meet-label mono">where the two meet</span>
+      <div class="scale mono"><span>Building</span><span>Neighbourhood</span><span>City</span><span>Territory</span></div>
+      {nodes.map((n) => (
+        <a class="node" href={n.href} data-id={n.id} style={`left:${n.x * 100}%;top:${n.y * 100}%`} class:list={{ flip: n.x > 0.8 }}>
+          <i><em class="mono">{n.n}</em></i>
+          <span class="lbl"><b class="mono">{String(n.n).padStart(2, '0')}</b> {n.short}</span>
+          <span class="peek">
+            {n.thumb ? <img src={n.thumb} alt="" loading="lazy" /> : <span class="nothumb mono">{n.disciplines.join(' · ')}</span>}
+            <span class="peek-t">{n.title}</span>
+            <span class="peek-c mono">{n.context}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="list">
+    <ol>
+      {nodes.map((n) => (
+        <li data-id={n.id}><a href={n.href}><b class="mono">{String(n.n).padStart(2, '0')}</b><span>{n.title}</span><span class="mono muted">{n.disciplines.join(' · ')}</span></a></li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- The prompt bar stays at the bottom of the screen, like an AI app; its answers stream above it. -->
+  <div class="dock" data-answers={JSON.stringify(answers)} data-nodes={JSON.stringify(nodes.map(({ id, n, short, href, text }) => ({ id, n, short, href, text })))}>
+    <div class="answer" hidden>
+      <div class="a-head mono muted"><span class="thinking">Reading {projects.length} projects and the CV</span><button type="button" class="x" aria-label="Close">×</button></div>
+      <div class="a-body"></div>
+      <p class="a-note mono muted">Answers are put together from this site’s own project pages and CV.</p>
+    </div>
+    <div class="sugg">
+      {suggestions.map((s) => <button type="button" class="chip">{s}</button>)}
+    </div>
+    <form class="ask">
+      <span class="spark" aria-hidden="true">✦</span>
+      <input type="text" autocomplete="off" aria-label="Ask about Pablo's work" placeholder="Ask about Pablo’s work…" />
+      <button class="send" type="submit" aria-label="Ask">↑</button>
+    </form>
+  </div>
+</Mockup>
+
+<script>
+  type Node = { id: string; n: number; short: string; href: string; text: string };
+  const dock = document.querySelector<HTMLElement>('.dock')!;
+  const answers: { keys: string[]; text: string[] }[] = JSON.parse(dock.dataset.answers!);
+  const nodes: Node[] = JSON.parse(dock.dataset.nodes!);
+  const form = dock.querySelector('form')!;
+  const input = form.querySelector('input')!;
+  const panel = dock.querySelector<HTMLElement>('.answer')!;
+  const body = dock.querySelector<HTMLElement>('.a-body')!;
+  const thinking = dock.querySelector<HTMLElement>('.thinking')!;
+  let run = 0;
+
+  function compose(q: string): string[] {
+    const s = q.toLowerCase();
+    const hit = answers.find((a) => a.keys.some((k) => s.includes(k)));
+    if (hit) return hit.text;
+    const words = s.split(/\W+/).filter((w) => w.length > 3);
+    const found = nodes.filter((n) => words.some((w) => n.text.includes(w)));
+    if (found.length) return [`${found.length} project${found.length > 1 ? 's' : ''} mention “${q.trim()}”:`, ...found.map((n) => `${n.short} [[${n.id}]]`)];
+    return ['Nothing on the site matches that yet. Try “architecture”, “GIS”, “housing” or “teams”.'];
+  }
+
+  function highlight(ids: string[]) {
+    document.querySelectorAll<HTMLElement>('.node, .list li').forEach((el) => {
+      el.classList.toggle('hit', ids.includes(el.dataset.id!));
+      el.classList.toggle('dim', ids.length > 0 && !ids.includes(el.dataset.id!));
+    });
+  }
+
+  async function ask(q: string) {
+    const me = ++run;
+    const lines = compose(q);
+    const ids = [...new Set(lines.join(' ').match(/\[\[([\w-]+)\]\]/g)?.map((m) => m.slice(2, -2)) ?? [])];
+    panel.hidden = false;
+    panel.classList.add('busy');
+    thinking.textContent = `“${q}”`;
+    body.innerHTML = '<p class="dots"><i></i><i></i><i></i></p>';
+    highlight([]);
+    await new Promise((r) => setTimeout(r, 650));
+    if (me !== run) return;
+    panel.classList.remove('busy');
+    body.innerHTML = '';
+    highlight(ids);
+    // Stream word by word; [[id]] becomes a numbered citation that links to the project.
+    for (const line of lines) {
+      const p = document.createElement('p');
+      body.append(p);
+      for (const w of line.split(' ')) {
+        if (me !== run) return;
+        const m = w.match(/^\[\[([\w-]+)\]\](.*)$/);
+        if (m) {
+          const n = nodes.find((x) => x.id === m[1]);
+          if (n) {
+            const a = document.createElement('a');
+            a.className = 'cite mono';
+            a.href = n.href;
+            a.textContent = String(n.n);
+            p.append(a, document.createTextNode(m[2] + ' '));
+          }
+        } else p.append(document.createTextNode(w + ' '));
+        body.scrollTop = body.scrollHeight;
+        await new Promise((r) => setTimeout(r, 14));
+      }
+    }
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); if (input.value.trim()) ask(input.value.trim()); });
+  dock.querySelectorAll<HTMLButtonElement>('.sugg .chip').forEach((b) => b.addEventListener('click', () => { input.value = b.textContent!; ask(b.textContent!); }));
+  dock.querySelector('.x')!.addEventListener('click', () => { run++; panel.hidden = true; highlight([]); input.value = ''; });
+  (window as any).mockAsk = ask;
+</script>
+
+<style>
+  .intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: end; padding: clamp(32px, 6vh, 64px) 32px 28px; }
+  h1 { font-size: clamp(40px, 4.8vw, 68px); line-height: .98; letter-spacing: -0.05em; }
+  .lede { font-size: 17px; line-height: 1.55; margin: 0; max-width: 30em; text-wrap: balance; }
+
+  .atlas-wrap { padding: 0 32px; }
+  .atlas-bar { display: flex; justify-content: space-between; gap: 16px; padding: 0 0 10px; }
+  .live { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity: .3; } }
+  .atlas { position: relative; height: max(420px, calc(100vh - 430px)); border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--card) 70%, transparent); backdrop-filter: blur(2px); overflow: visible; }
+  .atlas svg { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 18px; }
+  .ring { fill: none; stroke: color-mix(in srgb, var(--green) 30%, var(--line)); stroke-width: 1; }
+  .meet { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 5; }
+  .ax { position: absolute; left: 16px; font-size: 11px; color: var(--muted); }
+  .ax-top { top: 14px; } .ax-bot { bottom: 36px; }
+  .meet-label { position: absolute; left: 41%; top: 44%; transform: translate(-50%, -50%) rotate(30deg); font-size: 11px; color: var(--muted); background: var(--card); padding: 0 6px; }
+  .scale { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; padding: 9px 16px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--muted); }
+
+  .node { position: absolute; transform: translate(-6px, -6px); display: flex; align-items: center; gap: 8px; text-decoration: none; z-index: 1; transition: opacity .3s; }
+  .node i { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bg) 80%, transparent); transition: transform .25s, background .25s; flex: none; }
+  .lbl { font-size: 13px; color: var(--ink); white-space: nowrap; background: color-mix(in srgb, var(--bg) 82%, transparent); padding: 1px 4px; border-radius: 4px; }
+  .lbl b { font-weight: 400; color: var(--muted); font-size: 11px; }
+  .node i em { display: none; font-style: normal; font-size: 10px; color: var(--bg); }
+  .node.flip { flex-direction: row-reverse; transform: translate(calc(-100% + 6px), -6px); }
+  .node:hover { z-index: 5; }
+  .node:hover i, .node.hit i { background: var(--green); transform: scale(1.35); }
+  .node.hit i { box-shadow: 0 0 0 6px color-mix(in srgb, var(--green) 22%, transparent); }
+  .node.dim { opacity: .28; }
+  .peek { position: absolute; left: 22px; bottom: 18px; width: 220px; padding: 8px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 24px 48px -24px rgba(0,0,0,.35); opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .2s, transform .2s; display: flex; flex-direction: column; gap: 4px; }
+  .node.flip .peek { left: auto; right: 22px; }
+  .node:hover .peek { opacity: 1; transform: none; }
+  .peek img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 7px; }
+  .nothumb { display: grid; place-items: center; aspect-ratio: 16 / 10; border-radius: 7px; background: var(--soft); color: var(--muted); font-size: 11px; }
+  .peek-t { font-size: 13px; color: var(--ink); line-height: 1.3; white-space: normal; padding: 2px 2px 0; }
+  .peek-c { font-size: 11px; color: var(--muted); padding: 0 2px 2px; }
+
+  .list { padding: 28px 32px 220px; }
+  .list ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 40px; }
+  .list li { break-inside: avoid; border-bottom: 1px solid var(--line); transition: opacity .3s; }
+  .list a { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; padding: 11px 0; text-decoration: none; font-size: 14px; color: var(--ink); align-items: baseline; }
+  .list b { font-weight: 400; color: var(--muted); font-size: 11px; }
+  .list .mono { font-size: 11px; }
+  .list li.dim { opacity: .3; }
+  .list li.hit b { color: var(--green); }
+
+  .dock { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); width: min(720px, calc(100% - 32px)); z-index: 20; display: flex; flex-direction: column; gap: 10px; }
+  .ask { display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.35); }
+  .ask:focus-within { border-color: color-mix(in srgb, var(--green) 60%, var(--line)); }
+  .spark { color: var(--green); }
+  .ask input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: 400 16px/1 var(--sans); color: var(--ink); padding: 12px 0; }
+  .ask input::placeholder { color: var(--muted); }
+  .send { width: 38px; height: 38px; border-radius: 12px; border: 0; background: var(--ink); color: var(--bg); font-size: 16px; cursor: pointer; }
+  .sugg { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .sugg .chip { cursor: pointer; background: color-mix(in srgb, var(--card) 90%, transparent); backdrop-filter: blur(8px); }
+  .sugg .chip:hover { border-color: var(--muted); color: var(--ink); }
+  .answer { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 24px 60px -28px rgba(0,0,0,.35); padding: 14px 18px 12px; }
+  .a-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+  .busy .thinking { background: linear-gradient(90deg, var(--muted) 30%, var(--ink) 50%, var(--muted) 70%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 1.2s linear infinite; }
+  @keyframes shine { to { background-position: -200% 0; } }
+  .x { border: 0; background: none; color: var(--muted); font-size: 18px; cursor: pointer; line-height: 1; }
+  .a-body { max-height: min(42vh, 340px); overflow-y: auto; margin-top: 8px; }
+  .a-body :global(p) { margin: 0 0 8px; font-size: 15px; line-height: 1.6; color: var(--body); }
+  .a-body :global(.cite) { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px; margin: 0 2px; border-radius: 6px; background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green); font-size: 10.5px; text-decoration: none; vertical-align: 2px; }
+  .a-body :global(.dots) { display: flex; gap: 5px; padding: 6px 0; }
+  .a-body :global(.dots i) { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: pulse 1s infinite; }
+  .a-body :global(.dots i:nth-child(2)) { animation-delay: .15s; }
+  .a-body :global(.dots i:nth-child(3)) { animation-delay: .3s; }
+  .a-note { font-size: 10.5px; margin: 6px 0 0; padding-top: 8px; border-top: 1px dashed var(--line); }
+
+  @media (max-width: 760px) {
+    .intro { grid-template-columns: 1fr; gap: 20px; padding: 40px 20px 28px; }
+    .atlas-wrap { padding: 0 12px; }
+    .atlas { height: auto; aspect-ratio: 4 / 5; }
+    .meet-label { display: none; }
+    .lbl { display: none; }
+    .node { transform: translate(-11px, -11px); }
+    .node.flip { transform: translate(-11px, -11px); }
+    .node i { width: 22px; height: 22px; display: grid; place-items: center; }
+    .node i em { display: block; }
+    .scale span:nth-child(2) { display: none; }
+    .peek { display: none; }
+    .hide-s { display: none; }
+    .list { padding: 20px 20px 240px; }
+    .list ol { columns: 1; }
+    .list a { grid-template-columns: 26px 1fr; }
+    .list a .mono:last-child { display: none; }
+    .sugg { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+    .dock { bottom: 12px; width: calc(100% - 24px); }
+  }
+</style>

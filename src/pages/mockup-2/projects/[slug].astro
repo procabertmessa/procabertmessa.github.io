@@ -1,0 +1,105 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Mockup from '../../../layouts/Mockup.astro';
+import QA from '../../../components/mockup/QA.astro';
+import { getProjects } from '../../../lib/projects';
+import { disciplineLabel } from '../../../data/categories';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((p, i) => ({ params: { slug: p.id }, props: { project: p, i, next: projects[(i + 1) % projects.length] } }));
+}
+
+const { project, i, next } = Astro.props;
+const { Content } = await render(project);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const d = project.data;
+const host = d.url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+// Every image in reading order: the cover, then the project's images or each chapter's images.
+const images = [
+  ...(d.cover ? [{ src: d.cover, caption: d.title, drawing: false }] : []),
+  ...d.images,
+  ...d.chapters.flatMap((c) => c.images),
+];
+// Each chapter shows its own first image on the stage.
+let k = d.cover ? 1 + d.images.length : d.images.length;
+const chapters = d.chapters.map((c) => { const img = c.images.length ? k : 0; k += c.images.length; return { ...c, img }; });
+
+// Scale meter on the project card: how far the project reaches, from one building to a whole territory.
+const scaleOf = (): [number, string] => {
+  if (d.disciplines.includes('architecture')) return [1, 'Building'];
+  if (/catalonia|cape|cambridge/i.test(d.location ?? '')) return [4, 'Territory'];
+  if (d.disciplines.includes('urbanism')) return [3, 'City'];
+  return [3, 'City'];
+};
+const [scale, scaleLabel] = scaleOf();
+---
+
+<Mockup title={d.title} active="projects" root="mockup-2">
+  <div class="split2">
+    <aside class="stage">
+      <div class="stage-box">
+        {images.length ? images.map((img, j) => (
+          <div class:list={['stage-img', { on: j === 0, drawing: img.drawing }]} data-caption={img.caption ?? ''}>
+            <Image src={img.src} alt={img.caption ?? d.title} widths={[800, 1400]} sizes="(max-width: 900px) 100vw, 55vw" loading={j === 0 ? 'eager' : 'lazy'} />
+          </div>
+        )) : <div class="stage-img on empty mono muted">Images coming soon</div>}
+      </div>
+      <div class="stage-meta">
+        <span class="stage-cap mono muted">{images[0]?.caption ?? ''}</span>
+        <div class="thumbs">
+          {images.length > 1 && images.map((img, j) => (
+            <button type="button" data-i={j} aria-label={img.caption ?? `Image ${j + 1}`}><Image src={img.src} alt="" widths={[120]} sizes="44px" /></button>
+          ))}
+        </div>
+      </div>
+    </aside>
+
+    <div class="panel">
+      <p class="crumb mono muted"><a href={`${base}/mockup-2/#index`}>Atlas</a> / {String(i + 1).padStart(2, '0')}</p>
+      <h1>{d.title}</h1>
+      <p class="lede">{d.summary}</p>
+
+      <div class="card mono">
+        <div class="card-head muted"><span>Project card</span><span>{project.id}</span></div>
+        <dl>
+          <div><dt>type</dt><dd>{d.disciplines.map(disciplineLabel).join(', ')}</dd></div>
+          <div><dt>scale</dt><dd><span class="meter">{[1, 2, 3, 4].map((s) => <i class:list={{ f: s <= scale }}></i>)}</span>{scaleLabel}</dd></div>
+          <div><dt>with</dt><dd>{d.context}</dd></div>
+          {d.role && <div><dt>role</dt><dd>{d.role}</dd></div>}
+          {d.location && <div><dt>location</dt><dd>{d.location}</dd></div>}
+          {d.facts.map((f) => <div><dt>{f.label.toLowerCase()}</dt><dd>{f.value}</dd></div>)}
+          {d.stack.length > 0 && <div><dt>tools</dt><dd>{d.stack.join(' · ')}</dd></div>}
+          {d.skills.length > 0 && <div><dt>skills</dt><dd>{d.skills.join(' · ')}</dd></div>}
+          {d.url && <div><dt>live</dt><dd><a href={d.url} target="_blank" rel="noopener">{host} ↗</a></dd></div>}
+        </dl>
+      </div>
+
+      <div class="qa" data-qa>
+        <p class="qa-label mono muted"><span class="spark">✦</span> Ask this project</p>
+        <div class="qa-chips"></div>
+        <div class="qa-out">
+          {chapters.map((c) => (
+            <section class="qa-sec" data-q={c.title} data-img={c.img}><p>{c.text}</p>{c.scales.length > 0 && <p class="mono muted">{c.scales.join(' · ')}</p>}</section>
+          ))}
+          {!chapters.length && <div data-split><Content /></div>}
+        </div>
+      </div>
+
+      <a class="next" href={`${base}/mockup-2/projects/${next.id}/`}>
+        <span class="mono muted">Next on the atlas</span>
+        <span class="nt">{next.data.title.split(' — ')[0]} →</span>
+      </a>
+    </div>
+  </div>
+  <QA />
+</Mockup>
+
+<style>
+  .empty { display: grid; place-items: center; }
+  .next { display: flex; flex-direction: column; gap: 4px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); text-decoration: none; }
+  .nt { font-size: 24px; color: var(--ink); letter-spacing: -0.03em; }
+  .next:hover .nt { color: var(--green); }
+</style>

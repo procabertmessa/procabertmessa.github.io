@@ -1,0 +1,124 @@
+---
+// Second mockup: the "ask this page" pattern shared by the project and About pages.
+// A page puts its content in sections (.qa-sec, or plain markdown inside [data-split], cut at each h2);
+// this turns them into question chips, shows one answer at a time and swaps the image on the stage.
+---
+
+<script>
+  for (const qa of document.querySelectorAll<HTMLElement>('[data-qa]')) {
+    const chips = qa.querySelector<HTMLElement>('.qa-chips')!;
+    const out = qa.querySelector<HTMLElement>('.qa-out')!;
+
+    // Markdown bodies come as one block: cut them into sections at each h2.
+    const split = qa.querySelector<HTMLElement>('[data-split]');
+    if (split) {
+      let sec: HTMLElement | null = null;
+      for (const node of [...split.childNodes]) {
+        if (node instanceof HTMLHeadingElement && node.tagName === 'H2') {
+          sec = document.createElement('section');
+          sec.className = 'qa-sec';
+          sec.dataset.q = node.textContent ?? '';
+          split.before(sec);
+          node.remove();
+          continue;
+        }
+        if (sec) sec.append(node);
+      }
+      split.remove();
+    }
+
+    const secs = [...qa.querySelectorAll<HTMLElement>('.qa-sec')];
+    const stage = document.querySelectorAll<HTMLElement>('.stage-img');
+    const caption = document.querySelector<HTMLElement>('.stage-cap');
+    secs.forEach((s, i) => {
+      s.dataset.img ??= String(stage.length ? i % stage.length : 0);
+      out.append(s);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.innerHTML = `<span class="qn">${String(i + 1).padStart(2, '0')}</span> ${s.dataset.q}`;
+      b.addEventListener('click', () => show(i, true));
+      chips.append(b);
+    });
+
+    function show(i: number, animate: boolean) {
+      secs.forEach((s, j) => {
+        s.hidden = j !== i;
+        s.classList.toggle('typing', animate && j === i);
+      });
+      [...chips.children].forEach((c, j) => c.classList.toggle('on', j === i));
+      const img = Number(secs[i].dataset.img);
+      stage.forEach((el, j) => el.classList.toggle('on', j === img));
+      if (caption) caption.textContent = stage[img]?.dataset.caption ?? '';
+    }
+    if (secs.length) show(0, false);
+  }
+
+  // Thumbnails under the stage pick an image directly.
+  document.querySelectorAll<HTMLButtonElement>('.thumbs button').forEach((b) =>
+    b.addEventListener('click', () => {
+      const i = Number(b.dataset.i);
+      document.querySelectorAll<HTMLElement>('.stage-img').forEach((el, j) => el.classList.toggle('on', j === i));
+      const cap = document.querySelector<HTMLElement>('.stage-cap');
+      if (cap) cap.textContent = document.querySelectorAll<HTMLElement>('.stage-img')[i]?.dataset.caption ?? '';
+    }),
+  );
+</script>
+
+<style is:global>
+  .split2 { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 56px; padding: 0 32px; align-items: start; }
+  .stage { position: sticky; top: 72px; display: flex; flex-direction: column; gap: 12px; }
+  .stage-box { position: relative; aspect-ratio: 4 / 3; max-height: calc(100vh - 140px); border-radius: 16px; overflow: hidden; background: var(--soft); border: 1px solid var(--line); }
+  .stage-img { position: absolute; inset: 0; opacity: 0; transition: opacity .5s; }
+  .stage-img.on { opacity: 1; }
+  .stage-img img { width: 100%; height: 100%; object-fit: cover; }
+  .stage-img.drawing { background: #fff; }
+  .stage-img.drawing img { object-fit: contain; padding: 20px; }
+  .stage-meta { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+  .thumbs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .thumbs button { flex: none; width: 44px; height: 32px; padding: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; cursor: pointer; background: var(--soft); }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+  .panel { padding: 40px 0 40px; }
+  .crumb { margin: 0 0 22px; }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--ink); }
+  .panel h1 { font-size: clamp(32px, 3.6vw, 50px); line-height: 1.04; letter-spacing: -0.04em; }
+  .panel .lede { font-size: 17px; line-height: 1.55; margin: 18px 0 0; }
+
+  /* Project card: the facts set out like an AI model card. */
+  .card { margin: 32px 0 0; border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; }
+  .card-head { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--soft); }
+  .card dl { margin: 0; padding: 4px 14px; }
+  .card dl div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .card dl div:last-child { border-bottom: 0; }
+  .card dt { color: var(--muted); }
+  .card dd { margin: 0; color: var(--ink); }
+  .card dd a { color: var(--green); text-decoration: none; }
+  .meter { display: inline-flex; gap: 3px; vertical-align: middle; margin-right: 8px; }
+  .meter i { width: 14px; height: 6px; border-radius: 2px; background: var(--line); }
+  .meter i.f { background: var(--green); }
+
+  .qa { margin-top: 36px; }
+  .qa-label { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; }
+  .qa-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .qa-chips .chip { cursor: pointer; }
+  .qa-chips .chip:hover { border-color: var(--muted); color: var(--ink); }
+  .qa-chips .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .qa-chips .qn { opacity: .5; }
+  .qa-out { margin-top: 20px; padding: 22px 22px 8px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); min-height: 140px; position: relative; }
+  .qa-out::before { content: '✦'; position: absolute; top: -9px; left: 18px; padding: 0 6px; background: var(--card); color: var(--green); font-size: 12px; }
+  .qa-sec p, .qa-sec li { font-size: 15.5px; line-height: 1.7; }
+  .qa-sec p:first-child { margin-top: 0; }
+  .qa-sec ul { padding-left: 1.1em; }
+  .qa-sec strong { color: var(--ink); font-weight: 500; }
+  /* The answer "writes itself": a soft edge sweeps down the text. */
+  .qa-sec.typing { animation: type 1.1s cubic-bezier(.2,.7,.2,1) both; -webkit-mask-image: linear-gradient(#000 0 60%, transparent 80%); mask-image: linear-gradient(#000 0 60%, transparent 80%); -webkit-mask-size: 100% 260%; mask-size: 100% 260%; }
+  @keyframes type { from { -webkit-mask-position: 0 100%; mask-position: 0 100%; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+
+  @media (max-width: 900px) {
+    .split2 { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
+    .stage { position: relative; top: 0; height: auto; margin-top: 12px; }
+    .panel { padding-top: 28px; }
+  }
+</style>
