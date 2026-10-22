@@ -131,7 +131,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .skills dt { color: var(--accent); margin-bottom: 6px; }
   .skills dd { margin: 0; font-size: 15px; color: var(--ink); }
 
-  .two { display: grid; grid-template-columns: 1.4fr 1fr; }
+  /* Education and Languages share one bottom line: each list stretches to the taller column and spaces its rows evenly. */
+  .two { display: grid; grid-template-columns: 1fr 1fr; }
+  .two > div { display: flex; flex-direction: column; }
+  .two .register { flex: 1; display: flex; flex-direction: column; }
+  .two .register > li { flex: 1; display: flex; flex-direction: column; justify-content: center; }
   .langs { border-left: 1px solid var(--line); }
 
   @media (max-width: 860px) {
