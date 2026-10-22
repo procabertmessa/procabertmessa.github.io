@@ -1,69 +1,135 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { getProjects, sheetNumber } from '../../lib/projects';
 import { disciplines, disciplineLabel } from '../../data/categories';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const all = await getProjects();
+// Projects with a cover and a page lead as large alternating rows; the rest follow as a compact list.
+const featured = all.filter((p) => p.data.cover && !p.data.soon);
+const more = all.filter((p) => !featured.includes(p));
 // Only offer filters that match at least one project.
 const filters = disciplines.filter((d) => all.some((p) => p.data.disciplines.includes(d.id)));
+const region = (loc?: string) => loc?.split(',').slice(-2, -1)[0]?.trim() ?? loc;
 ---
 
 <Base title="Projects" description="Data, urbanism, architecture and landscape projects." sheet="P-00" sheetTitle="Register of projects">
   <section class="pad head">
     <p class="mono caps muted">Sheet P-00 · Register of projects</p>
     <h1>Projects</h1>
-    <p class="measure">Parcel-level data and digital twins, urban design, and architecture, from Catalonia to the Western Cape. {all.length} sheets in this set.</p>
-  </section>
-  <section class="band">
-    <div class="band-head filters" role="group" aria-label="Filter projects">
+    <div class="filters" role="group" aria-label="Filter projects">
       <button type="button" class="chip on" data-filter="all">All <span>{all.length}</span></button>
       {filters.map((d) => (
         <button type="button" class="chip" data-filter={d.id}>{d.label} <span>{all.filter((p) => p.data.disciplines.includes(d.id)).length}</span></button>
       ))}
     </div>
-    <ol class="register">
-      {all.map((p) => (
-        <li data-tags={p.data.disciplines.join(' ')}>
-          <a class="reg-row" href={`${base}/projects/${p.id}/`}>
-            <span class="no">{sheetNumber(all, p.id)}</span>
-            <span class="title">{p.data.title}{p.data.draft && <span class="draft">Draft</span>}</span>
-            <span class="meta">{p.data.location}</span>
-            <span class="sub">{p.data.context}</span>
-            <span class="tags">{p.data.disciplines.map((t) => <span class="tag">{disciplineLabel(t)}</span>)}</span>
-          </a>
-        </li>
-      ))}
-    </ol>
   </section>
+
+  <section class="pad featured">
+    {featured.map((p, i) => (
+      <a class:list={['feat', { flip: i % 2 === 1 }]} href={`${base}/projects/${p.id}/`} data-tags={p.data.disciplines.join(' ')}>
+        <Image src={p.data.cover!} alt={p.data.title} widths={[700, 1100, 1400]} sizes="(max-width: 860px) 100vw, 700px" />
+        <div class="feat-text">
+          <p class="mono caps accent">{sheetNumber(all, p.id)}{p.data.location && ` · ${region(p.data.location)}`}</p>
+          <h2>{p.data.title}</h2>
+          <p class="sub">{p.data.context}</p>
+          <span class="tags">{p.data.disciplines.map((t) => <span class="tag">{disciplineLabel(t)}</span>)}</span>
+          <p class="mono caps go">View project →</p>
+        </div>
+      </a>
+    ))}
+  </section>
+
+  {more.length > 0 && (
+    <section class="pad more">
+      <p class="mono caps muted more-head">More projects</p>
+      <ol>
+        {more.map((p) => {
+          const row = (
+            <>
+              <span class="no mono">{sheetNumber(all, p.id)}</span>
+              <span class="name">{p.data.title}<span class="ctx">{p.data.context}</span></span>
+              <span class="tags">
+                {p.data.wip && <span class="tag muted-tag">In progress</span>}
+                {p.data.disciplines.map((t) => <span class="tag">{disciplineLabel(t)}</span>)}
+                {p.data.soon && <span class="soon mono">Coming soon</span>}
+              </span>
+            </>
+          );
+          return (
+            <li data-tags={p.data.disciplines.join(' ')}>
+              {p.data.soon ? <div class="row locked">{row}</div> : <a class="row" href={`${base}/projects/${p.id}/`}>{row}</a>}
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  )}
 </Base>
 
 <script>
   const chips = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const rows = document.querySelectorAll<HTMLElement>('[data-tags]');
+  const items = document.querySelectorAll<HTMLElement>('[data-tags]');
   chips.forEach((chip) =>
     chip.addEventListener('click', () => {
       const f = chip.dataset.filter!;
       chips.forEach((c) => c.classList.toggle('on', c === chip));
-      rows.forEach((r) => (r.hidden = f !== 'all' && !r.dataset.tags!.split(' ').includes(f)));
+      items.forEach((r) => (r.hidden = f !== 'all' && !r.dataset.tags!.split(' ').includes(f)));
     }),
   );
 </script>
 
 <style>
-  .head h1 { font-size: clamp(48px, 7vw, 96px); letter-spacing: -0.045em; margin: 10px 0 20px; }
-  .head p:last-child { margin: 0; }
-  .filters { justify-content: flex-start; flex-wrap: wrap; gap: 8px; }
+  .head h1 { font-size: clamp(48px, 7vw, 96px); letter-spacing: -0.045em; margin: 10px 0 24px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
-    font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer;
+    font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
     background: none; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px;
   }
   .chip span { opacity: 0.6; margin-left: 4px; }
   .chip:hover { color: var(--ink); }
   .chip.on { color: var(--paper); background: var(--ink); border-color: var(--ink); }
-  .tags { grid-column: 2 / -1; display: flex; gap: 6px; margin-top: 6px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .tag {
     font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
     color: var(--accent); border: 1px solid currentColor; padding: 2px 7px;
+  }
+  .muted-tag { color: var(--muted); }
+
+  .feat {
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center;
+    padding: 32px 0; border-top: 1px solid var(--line); color: inherit; text-decoration: none;
+  }
+  .feat[hidden] { display: none; }
+  .feat :global(img) { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; display: block; transition: opacity 0.2s; }
+  .feat.flip :global(img) { order: 2; }
+  .feat:hover :global(img) { opacity: 0.88; }
+  .feat-text p { margin: 0; }
+  .feat h2 { font-size: clamp(30px, 3.4vw, 44px); font-weight: 400; letter-spacing: -0.03em; line-height: 1.05; margin: 10px 0 12px; }
+  .sub { font-size: 15px; color: var(--body); margin-bottom: 16px !important; }
+  .go { margin-top: 22px !important; color: var(--ink); }
+  .feat:hover .go { color: var(--accent); }
+
+  .more-head { margin: 0; padding: 28px 0 10px; border-top: 1px solid var(--line); }
+  .more ol { list-style: none; padding: 0; margin: 0 0 60px; }
+  .row {
+    display: grid; grid-template-columns: 70px 1fr auto; gap: 14px; align-items: baseline;
+    padding: 16px 0; border-top: 1px solid var(--line); color: inherit; text-decoration: none;
+  }
+  a.row:hover .name { color: var(--accent); }
+  .locked { cursor: default; }
+  .locked .name { color: var(--body); }
+  .no { font-size: 11px; color: var(--muted); }
+  .name { font-size: 17px; }
+  .ctx { color: var(--muted); font-size: 13px; margin-left: 10px; }
+  .soon { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-left: 6px; }
+
+  @media (max-width: 860px) {
+    .feat { grid-template-columns: 1fr; gap: 18px; }
+    .feat.flip :global(img) { order: 0; }
+    .row { grid-template-columns: 50px 1fr; }
+    .row .tags { grid-column: 2; }
+    .ctx { display: block; margin: 4px 0 0; }
   }
 </style>

@@ -1,5 +1,5 @@
 ---
-title: Plà de l'Avellà Winery
+title: Penedès Winery
 summary: A family winery with a restaurant and guesthouse on a knoll at the edge of the pine forest, set into the slope so the wine-making follows the ground through courtyards at different levels.
 disciplines:
   - architecture

@@ -1,5 +1,5 @@
 ---
-title: City Digital Twin — Catalunya
+title: City Digital Twin Catalunya
 summary: An interactive model of Catalonia that computes housing, urban form,
   economic, mobility and research indicators for every census section, so places
   can be read and compared at the scale a decision needs.

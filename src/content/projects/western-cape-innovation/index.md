@@ -7,6 +7,7 @@ context: Aretian
 location: Western Cape, South Africa
 tags: [Economic analysis, KPIs, International]
 stack: [Python, QGIS, GeoServer WMS, Dun & Bradstreet data, KPI frameworks]
+draft: true # not on Pablo's list (2026-10-22)
 ---
 
 ## What it is

@@ -21,6 +21,8 @@ const projects = defineCollection({
       skills: z.array(z.string()).default([]),
       tags: z.array(z.string()).default([]),
       draft: z.boolean().default(false), // true = hidden on the live site, visible in `npm run dev`
+      soon: z.boolean().default(false), // true = listed on the Projects page but not clickable yet (no page until there is content)
+      wip: z.boolean().default(false), // true = shows an "In progress" tag
       cover: image().optional(), // e.g. ./01-cover.jpg (file in the same folder)
       // Data projects only (projects without the data tag use the architecture layout). How the images sit on the page: hero (cover across the page + plates grid), side (viewer beside the text), sheet (plates grid under the text).
       gallery: z.enum(['hero', 'side', 'sheet']).default('side'),

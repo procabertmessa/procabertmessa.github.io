@@ -7,6 +7,7 @@ context: Aretian
 location: Cambridge, MA, USA
 tags: [AI, Data visualisation, Innovation]
 stack: [Python, Anthropic API, Sankey diagrams, Overpass API, ArcGIS REST]
+draft: true # not on Pablo's list (2026-10-22)
 ---
 
 ## What it is

@@ -7,6 +7,7 @@ context: Aretian
 location: Catalonia, Spain
 tags: [Statistics, Housing, Digital twins]
 stack: [Python, pandas, Regression modelling]
+draft: true # not on Pablo's list (2026-10-22)
 ---
 
 ## What it is

@@ -4,14 +4,15 @@ import { Image } from 'astro:assets';
 import Lightbox from '../../components/Lightbox.astro';
 import ArchitectureProject from '../../components/ArchitectureProject.astro';
 import Base from '../../layouts/Base.astro';
-import { getProjects, sheetNumber } from '../../lib/projects';
+import { getProjects, getProjectPages, sheetNumber } from '../../lib/projects';
 import { disciplineLabel } from '../../data/categories';
 
 export async function getStaticPaths() {
-  const projects = await getProjects();
+  const all = await getProjects();
+  const projects = await getProjectPages();
   return projects.map((p, i) => ({
     params: { slug: p.id },
-    props: { project: p, all: projects, prev: projects[(i - 1 + projects.length) % projects.length], next: projects[(i + 1) % projects.length] },
+    props: { project: p, all, prev: projects[(i - 1 + projects.length) % projects.length], next: projects[(i + 1) % projects.length] },
   }));
 }
 

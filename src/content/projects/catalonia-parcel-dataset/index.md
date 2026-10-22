@@ -8,6 +8,7 @@ location: Catalonia, Spain
 year: '2026'
 tags: [Geospatial, Real estate, Data pipelines]
 stack: [Python, GeoPandas, pyogrio, Catastro INSPIRE (CP/BU, GML), MUC zoning, GeoPackage (EPSG:25831)]
+draft: true # not on Pablo's list (2026-10-22)
 ---
 
 ## What it is

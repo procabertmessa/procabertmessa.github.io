@@ -4,22 +4,22 @@
 // Order on the Projects page and on the home page. Move a line up or down to reorder.
 // Projects not listed here still appear, after the listed ones.
 export const projectOrder = [
-  // Pablo's priority list (2026-10-20)
+  // Pablo's list (2026-10-22)
   'city-digital-twin',
-  'sant-boi-urban-development',
-  'apartment-muntaner',
   'culinary-center',
-  'social-housing',
   'winery',
-  // Others, still being prepared
+  'flood-risk-climate-resilience',
   'maap-lab',
+  'social-housing',
+  'sant-boi-urban-development',
+  // Hidden (draft), not on the list
+  'apartment-muntaner',
   'civic-facility',
   'catalonia-parcel-dataset',
-  'flood-risk-climate-resilience',
   'hedonic-housing-model',
   'western-cape-innovation',
   'harvard-mit-innovation-pipeline',
   'eu-urban-initiative-bid',
 ];
 
-// The home page shows the first 4 published projects in this same order.
+// The home page shows the first 4 published projects with a page, in this same order.

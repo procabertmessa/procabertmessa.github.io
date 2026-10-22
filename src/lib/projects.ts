@@ -16,9 +16,14 @@ export async function getProjects(): Promise<Project[]> {
   return all.sort((a, b) => rank(a.id) - rank(b.id) || a.data.title.localeCompare(b.data.title));
 }
 
+/** Projects that have their own page. `soon: true` projects are listed but not clickable yet. */
+export async function getProjectPages(): Promise<Project[]> {
+  return (await getProjects()).filter((p) => !p.data.soon);
+}
+
 export async function getFeaturedProjects(): Promise<Project[]> {
   // Same order as the Projects page, so the home selection never disagrees with it.
-  return (await getProjects()).slice(0, 4);
+  return (await getProjectPages()).slice(0, 4);
 }
 
 /** Sheet number for a project, from its position in the published order: P-01, P-02 ... */

@@ -9,6 +9,7 @@ location: Sant Joan Despí, Spain
 year: '2026'
 tags: [Public sector, Digital twins, EU funding]
 stack: [Proposal writing, Digital twins, Public-sector innovation]
+draft: true # not on Pablo's list (2026-10-22)
 ---
 
 ## What it is
