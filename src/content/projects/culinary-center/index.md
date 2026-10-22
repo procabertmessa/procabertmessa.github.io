@@ -19,8 +19,8 @@ chapters:
       - src: ./03-site-plan.jpg
         caption: Site plan
         drawing: true
-      - src: ./10-la-clota-today.jpg
-        caption: La Clota and the allotments today
+      - src: ./10-allotment-park.jpg
+        caption: The centre above its new allotment park
   - title: Plan
     text: Parallel earth walls run along the plinth and organise the whole centre. Small courtyards between them bring daylight and cross-ventilation into the buried rooms. The roof becomes a lookout square over the city.
     images:
