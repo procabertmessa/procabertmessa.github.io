@@ -98,10 +98,11 @@ const region = d.location?.split(',').slice(-2, -1)[0]?.trim() ?? d.location;
 
   .figs { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 16px; align-items: start; }
   .figs figure { margin: 0; }
-  .frame { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; overflow: hidden; background: #151517; cursor: zoom-in; }
-  .frame :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .frame.drawing { background: #fff; padding: 4px; }
-  .frame.drawing :global(img) { object-fit: contain; }
+  /* The image is pinned to the frame so it is always centred in it: photos fill it, drawings fit whole on a white sheet. */
+  .frame { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; overflow: hidden; background: #151517; cursor: zoom-in; }
+  .frame :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .frame.drawing { background: #fff; }
+  .frame.drawing :global(img) { inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); object-fit: contain; }
   .frame:hover { outline: 1px solid var(--accent); }
   figcaption { margin-top: 7px; font-size: 10.5px; color: var(--muted); }
 
